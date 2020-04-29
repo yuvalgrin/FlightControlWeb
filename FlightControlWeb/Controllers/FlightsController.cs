@@ -15,7 +15,7 @@ namespace FlightControlWeb.Controllers
         [HttpGet]
         public JsonResult Get([FromQuery] DateTime relative_to)
         {
-            return new JsonResult("{\"null\":"+ relative_to + "}");
+            return new JsonResult("{\"daniel\":"+ relative_to + "}");
         }
 
         [HttpGet("&is_sync")]
