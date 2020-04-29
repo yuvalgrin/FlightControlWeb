@@ -11,20 +11,19 @@ namespace FlightControlWeb.Controllers
 {
     [ApiController]
     [Route("/api/[controller]")]
-    public class FlightsController : Controller
+    public class FlightPlanController : Controller
     {
-        [HttpGet]
-        public string Get([FromQuery] DateTime relativeTo, [FromQuery] bool syncAll)
+        [HttpGet("{id}")]
+        public string Get(string id)
         {
-            List<Flight> flights = FlightsManager.Instance.GetRelativeFlights(relativeTo, syncAll);
+            FlightPlan flights = FlightsManager.Instance.GetFlightPlan(id);
             return JsonConvert.SerializeObject(flights, Formatting.Indented);
         }
 
-        [HttpDelete("{id}")]
-        public void Delete(string id)
+        [HttpPost]
+        public void Post([FromHeader] FlightPlan flightPlan)
         {
-            FlightsManager.Instance.DeleteFlight(id);
+            FlightsManager.Instance.AddFlightPlan(flightPlan);
         }
-
     }
 }
