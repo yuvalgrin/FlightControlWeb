@@ -6,7 +6,7 @@ import Mark_flight from './FlightsTable.css';
 const FlightsTable = ({
                          flightsList,
                          flightClicked,
-                         setFlightClick,
+                         setFlightClick
                      }) => {
     const [uploadFileMode, setIsUploadFileMode] = useState(false);
 

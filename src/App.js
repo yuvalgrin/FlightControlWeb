@@ -2,8 +2,11 @@ import React, {useEffect, useState} from 'react';
 import { format } from 'date-fns'
 import './App.css';
 import './bootstrap.min.css';
+import FlightMap from "./FlightMap";
 import FlightsTable from "./FlightsTable";
+import FlightDetails from "./FlightDetails";
 import getAndUpdate from './utils/RequestUtil';
+import { Container, Row, Col } from 'react-bootstrap';
 
 const urlPrefix = "https://localhost:5001/api/";
 const flightsApi = "flights?relative_to=";
@@ -26,11 +29,16 @@ function App() {
     }, [])
 
     return (
-    <div className="App">
-      <header className="Flight-Control-Web">
-      <FlightsTable flightsList={flightsList} flightClicked={flightClicked} setFlightClick={setFlightClicked}/>
-      </header>
-    </div>
+        <Container className={'flexContainer'}>
+            <div className={'flexColumn1'}>
+                    <FlightMap flightsList={flightsList} flightClicked={flightClicked} setFlightClick={setFlightClicked}/>
+
+                    <FlightsTable flightsList={flightsList} flightClicked={flightClicked} setFlightClick={setFlightClicked}/>
+            </div>
+            <div className={'flexColumn2'}>
+                <FlightDetails flightClicked={flightClicked}/>
+            </div>
+        </Container>
   );
 }
 
