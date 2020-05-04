@@ -31,12 +31,11 @@ function App() {
     return (
         <Container className={'flexContainer'}>
             <div className={'flexColumn1'}>
-                    <FlightMap flightsList={flightsList} flightClicked={flightClicked} setFlightClick={setFlightClicked}/>
-
-                    <FlightsTable flightsList={flightsList} flightClicked={flightClicked} setFlightClick={setFlightClicked}/>
-            </div>
-            <div className={'flexColumn2'}>
+                <FlightMap flightsList={flightsList} flightClicked={flightClicked} setFlightClick={setFlightClicked}/>
                 <FlightDetails flightClicked={flightClicked}/>
+            </div>
+            <div className={'flexColumn2'} color={'black'}>
+                <FlightsTable className={'flightsTable'} flightsList={flightsList} flightClicked={flightClicked} setFlightClick={setFlightClicked}/>
             </div>
         </Container>
   );
