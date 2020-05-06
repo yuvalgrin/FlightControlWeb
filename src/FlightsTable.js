@@ -17,7 +17,9 @@ const FlightsTable = ({
 
     const deleteFlight = (id) =>  {
         let url = urlPrefix + flightsApi + id;
-        fetch(url);
+        fetch(url, {
+            method: 'delete'
+        })
     }
 
     let items = [];

@@ -17,3 +17,7 @@
 .flightsTable {
     flex-grow: 1;
 }
+
+.app {
+    background: black;
+}

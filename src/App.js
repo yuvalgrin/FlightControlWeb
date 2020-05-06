@@ -29,15 +29,18 @@ function App() {
     }, [])
 
     return (
-        <Container className={'flexContainer'}>
-            <div className={'flexColumn1'}>
-                <FlightMap flightsList={flightsList} flightClicked={flightClicked} setFlightClick={setFlightClicked}/>
-                <FlightDetails flightClicked={flightClicked}/>
-            </div>
-            <div className={'flexColumn2'} color={'black'}>
-                <FlightsTable className={'flightsTable'} flightsList={flightsList} flightClicked={flightClicked} setFlightClick={setFlightClicked}/>
-            </div>
-        </Container>
+        <div className={'app'}>
+            <Container className={'flexContainer'}>
+                <div className={'flexColumn1'}>
+                    <FlightMap flightsList={flightsList} flightClicked={flightClicked} setFlightClick={setFlightClicked}/>
+                    <FlightDetails flightClicked={flightClicked}/>
+                </div>
+                <div className={'flexColumn2'} color={'black'}>
+                    <FlightsTable className={'flightsTable'} flightsList={flightsList} flightClicked={flightClicked} setFlightClick={setFlightClicked}/>
+                </div>
+                <img src="./resources/pngwave.png"/>
+            </Container>
+        </div>
   );
 }
 

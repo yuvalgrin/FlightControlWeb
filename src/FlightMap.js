@@ -1,28 +1,70 @@
-import {Map, InfoWindow, Marker, GoogleApiWrapper} from 'google-maps-react';
+import {Map, Polyline, Marker, GoogleApiWrapper} from 'google-maps-react';
 import Table from "react-bootstrap/Table";
 import * as React from "react";
 
 const apiKey = 'AIzaSyAjngpsKv9PcK9NqXrHi8VdNi_5VI287CM';
 
-export class FlightMap extends React.Component  {
+let myLatLng = {lat: -25.363, lng: 131.044};
+let flightClicked;
+let flightsList;
 
+export class FlightMap extends React.Component  {
     render() {
         return (
-            <Map style={containerStyle}
-                           containerStyle={containerStyle} google={this.props.google} zoom={14}>
-                <AirplaneIcon/>
+            <Map google={this.props.google} style={containerStyle}
+                           containerStyle={containerStyle} zoom={14} center={myLatLng}>
+                <Marker onClick={onAirplaneClick()}
+                        icon={{
+                    url: "./resources/pngwave.png",
+                    position: {myLatLng},
+                    scaledSize: new this.props.google.maps.Size(64,64),
+                    origin: new this.props.google.maps.Point(0, 0),
+                    anchor: new this.props.google.maps.Point(0, 32) }}
+                        name={'Airplane'} />
             </Map>
         );
     }
 }
+//
+// const generatePolylines = ({flightClicked}) => {
+//     let items = [];
+//
+//     for (let [key, value] of Object.entries(flightsList)) {
+//         let points = [{lat: 25.774, lng: -80.190},
+//             {lat: 25.774, lng: -80.190}];
+//         items.push(
+//             <Polyline
+//                 path={points}
+//                 strokeColor={flightClicked?"#0000FF":"#FFFF00"}
+//                 strokeOpacity={flightClicked?1:0.7}
+//                 strokeWeight={flightClicked?4:2} />
+//         )
+//     }
+//
+//     return (items);
+// };
+//
+// const generatePolylines = ({flight,flightClicked}) => {
+//     let items = [];
+//     let onClick;
+//
+//     for (let [key, value] of Object.entries(flightsList)) {
+//         let points = [{lat: 25.774, lng: -80.190},
+//                         {lat: 25.774, lng: -80.190}];
+//         items.push(
+//             <Polyline
+//                 path={points}
+//                 strokeColor={flightClicked?"#0000FF":"#FFFF00"}
+//                 strokeOpacity={flightClicked?1:0.7}
+//                 strokeWeight={flightClicked?4:2} />
+//         )
+//     }
+//
+//     return (items);
+// };
 
-const AirplaneIcon = ({}) => {
-    return (<img width={10} height={10} src={"https://toppng.com/uploads/preview/airplane-icon-11549899707q0qa0ytxst.png"}/>);
-}
-
-const style = {
-    width: '100%',
-    height: '100%'
+const onAirplaneClick = (e) => {
+    flightClicked = e;
 }
 
 const containerStyle = {
@@ -32,5 +74,5 @@ const containerStyle = {
 }
 
 export default GoogleApiWrapper({
-    apiKey: (apiKey)
+    apiKey: apiKey
 })(FlightMap)
