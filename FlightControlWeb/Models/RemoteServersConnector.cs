@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using FlightControlWeb.Models.JsonModels;
 
@@ -17,10 +18,11 @@ namespace FlightControlWeb.Models
             }
         }
 
-        public Dictionary<string, Server> ActiveServers { get; set; }
+        public ConcurrentDictionary<string, Server> ActiveServers { get; set; }
 
         public RemoteServersConnector()
         {
+            ActiveServers = new ConcurrentDictionary<string, Server>();
         }
 
         /**
@@ -31,6 +33,14 @@ namespace FlightControlWeb.Models
         {
             List<Flight> flights = new List<Flight>();
             return flights;
+        }
+
+        /**
+         * 
+         */
+        public void AddServer(Server server)
+        {
+            ActiveServers.TryAdd(server.ServerId, server);
         }
     }
 }
