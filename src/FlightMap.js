@@ -1,5 +1,5 @@
 import {Map, Polyline, Marker, GoogleApiWrapper} from 'google-maps-react';
-import Table from "react-bootstrap/Table";
+import planePng from './resources/pngwave.png';
 import * as React from "react";
 
 const apiKey = 'AIzaSyAjngpsKv9PcK9NqXrHi8VdNi_5VI287CM';
@@ -15,9 +15,8 @@ export class FlightMap extends React.Component  {
                            containerStyle={containerStyle} zoom={14} center={myLatLng}>
                 <Marker onClick={onAirplaneClick()}
                         icon={{
-                    url: "./resources/pngwave.png",
+                    url: planePng,
                     position: {myLatLng},
-                    scaledSize: new this.props.google.maps.Size(64,64),
                     origin: new this.props.google.maps.Point(0, 0),
                     anchor: new this.props.google.maps.Point(0, 32) }}
                         name={'Airplane'} />
@@ -25,43 +24,63 @@ export class FlightMap extends React.Component  {
         );
     }
 }
-//
-// const generatePolylines = ({flightClicked}) => {
-//     let items = [];
-//
-//     for (let [key, value] of Object.entries(flightsList)) {
-//         let points = [{lat: 25.774, lng: -80.190},
-//             {lat: 25.774, lng: -80.190}];
-//         items.push(
-//             <Polyline
-//                 path={points}
-//                 strokeColor={flightClicked?"#0000FF":"#FFFF00"}
-//                 strokeOpacity={flightClicked?1:0.7}
-//                 strokeWeight={flightClicked?4:2} />
-//         )
-//     }
-//
-//     return (items);
-// };
-//
-// const generatePolylines = ({flight,flightClicked}) => {
-//     let items = [];
-//     let onClick;
-//
-//     for (let [key, value] of Object.entries(flightsList)) {
-//         let points = [{lat: 25.774, lng: -80.190},
-//                         {lat: 25.774, lng: -80.190}];
-//         items.push(
-//             <Polyline
-//                 path={points}
-//                 strokeColor={flightClicked?"#0000FF":"#FFFF00"}
-//                 strokeOpacity={flightClicked?1:0.7}
-//                 strokeWeight={flightClicked?4:2} />
-//         )
-//     }
-//
-//     return (items);
-// };
+
+/**
+ *  This method will iterate all of the flight plans and print them into the Map object
+ * @param google
+ * @param flight
+ * @param isClicked
+ * @returns {[]}
+ */
+const flightIterator = ({google,flight,isClicked}) => {
+    let items = [];
+    let onClick;
+
+    for (let [key, value] of Object.entries(flightsList)) {
+        items.push( getMarkers(null,null,null) )
+        items.push( getPolylines() )
+    }
+    return (items);
+};
+
+// Get the markers from flights list
+const getMarkers = ({google,flight,isClicked}) => {
+    let items = [];
+    let onClick;
+
+        items.push(
+            <Marker onClick={onAirplaneClick(flight)}
+                    icon={{
+                        url: isClicked ? planePng : planePng,
+                        position: {myLatLng},
+                        origin: new google.maps.Point(0, 0),
+                        anchor: new google.maps.Point(0, 32) }}
+                    name={flight.flight_id} />
+        )
+
+    return (items);
+};
+
+
+// Get the polylines from flight segments
+const getPolylines = ({flight,isClicked}) => {
+    let items = [];
+    let onClick;
+
+    for (let [key, value] of Object.entries(flightsList)) {
+        let points = [{lat: 25.774, lng: -80.190},
+                        {lat: 25.774, lng: -80.190}];
+        items.push(
+            <Polyline
+                path={points}
+                strokeColor={isClicked?"#0000FF":"#FFFF00"}
+                strokeOpacity={isClicked?1:0.7}
+                strokeWeight={isClicked?4:2} />
+        )
+    }
+
+    return (items);
+};
 
 const onAirplaneClick = (e) => {
     flightClicked = e;

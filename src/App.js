@@ -38,7 +38,6 @@ function App() {
                 <div className={'flexColumn2'} color={'black'}>
                     <FlightsTable className={'flightsTable'} flightsList={flightsList} flightClicked={flightClicked} setFlightClick={setFlightClicked}/>
                 </div>
-                <img src="./resources/pngwave.png"/>
             </Container>
         </div>
   );
