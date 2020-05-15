@@ -16,13 +16,12 @@ const FlightDetails = ({flightClicked}) => {
         }
     }
 
+    // const createRows = () => Object.entries(flightClicked).map(key, value => this.getMarker(value))
+
+
     return (
         <Table striped bordered hover variant="dark">
             <thead>
-            <tr>
-                <th>Type</th>
-                <th>Value</th>
-            </tr>
             </thead>
             <tbody>
             {items}

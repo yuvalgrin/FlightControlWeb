@@ -9,13 +9,27 @@ html {
 .grid-container {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-    grid-template-rows: repeat(auto-fit, minmax(300px, 1fr));
+    grid-template-rows: 47px 1fr 1fr;
     gap: 10px 10px;
-    grid-template-areas: "map table" "details table";
-}
+    grid-template-areas: "header header" "map flight-table" "details flight-table";}
 
-.flight-table { grid-area: table; }
+.header {
+    grid-area: header;
+    overflow: hidden;
+    font-weight: bold;
+    font-stretch: extra-expanded;
+    color: white;
+    text-shadow: 2px 2px #1b1e21;}
 
-.map { grid-area: map; position: relative; }
+.flight-table {
+    grid-area: flight-table;
+    overflow: hidden;}
 
-.details { grid-area: details; }
+.map {
+    grid-area: map;
+    position: relative;
+    overflow: hidden;}
+
+.details {
+    grid-area: details;
+    overflow: hidden;}

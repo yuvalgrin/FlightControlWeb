@@ -3,7 +3,7 @@ import { useState } from 'react';
 import Table from 'react-bootstrap/Table';
 import Mark_flight from './FlightsTable.css';
 import {format} from "date-fns";
-import getAndUpdate from "./utils/RequestUtil";
+import {deleteReq} from './utils/RequestUtil';
 
 const urlPrefix = "https://localhost:5001/api/";
 const flightsApi = "flights/";
@@ -14,13 +14,6 @@ const FlightsTable = ({
                          setFlightClick
                      }) => {
     const [uploadFileMode, setIsUploadFileMode] = useState(false);
-
-    const deleteFlight = (id) =>  {
-        let url = urlPrefix + flightsApi + id;
-        fetch(url, {
-            method: 'delete'
-        })
-    }
 
     let items = [];
     if (flightsList) {
@@ -34,7 +27,7 @@ const FlightsTable = ({
                     {/*{markFlight?<p className={Mark_flight}>{item.flight_id}</p>:*/}
                     {markFlight?<b><u>{item.flight_id}</u></b>:
                     item.flight_id}</td>
-            <td onClick={() => deleteFlight(item.flight_id)}>X</td>
+            <td onClick={() => deleteReq(item.flight_id)}>X</td>
             </tr>})
     }
 

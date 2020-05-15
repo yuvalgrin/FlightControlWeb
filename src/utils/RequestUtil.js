@@ -1,4 +1,7 @@
-const getAndUpdate = async (
+const urlPrefix = "https://localhost:5001/api/";
+const flightsApi = "flights/";
+
+export const getAndUpdate = async (
     url,
     setStateCallback,
     setLoaded,
@@ -21,6 +24,13 @@ const getAndUpdate = async (
     }
 };
 
+export const deleteReq = (id) =>  {
+    let url = urlPrefix + flightsApi + id;
+    fetch(url, {
+        method: 'delete'
+    })
+}
+
 
 const handleErrors = response => {
     if (!response.ok) {
@@ -28,5 +38,3 @@ const handleErrors = response => {
     }
     return response;
 };
-
-export default getAndUpdate;
