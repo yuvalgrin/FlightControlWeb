@@ -20,7 +20,7 @@ namespace FlightControlWeb.Controllers
             return JsonConvert.SerializeObject(flights, Formatting.Indented);
         }
 
-        [HttpDelete("/{id}")]
+        [HttpDelete("{id}")]
         public void Delete(string id)
         {
             FlightsManager.Instance.DeleteFlight(id);
