@@ -84,19 +84,20 @@ namespace FlightControlWeb.Models
         public void InitDummies()
         {
             // Dummy flight!!!
-            for (int i=0; i < 4; i++)
+            for (int i=0; i < 5 ; i++)
             {
                 int num = 750 + i;
                 string id = "EL" + num;
-                Flight fl = new Flight(id, 32.704581+i, 35.583124+i, i, "Company_"+i,
+                Flight fl = new Flight(id, 32.704581+i*2, 35.583124+i * 2, i, "Company_"+i,
                 new DateTime(), false);
                 ActiveFlights.TryAdd(fl.FlightId, fl);
 
                 Location loc = new Location(0,0, new DateTime());
                 List<Segment> ls = new List<Segment>();
-                ls.Add(new Segment(32.704581, 35.583124, 2));
-                ls.Add(new Segment(33.804581, 35.683124, 3));
-                ls.Add(new Segment(32.904581, 36.783124, 4));
+                ls.Add(new Segment(32.704581 + i * 2, 35.583124 + i * 2, 2));
+                ls.Add(new Segment(33.804581 + i * 2, 35.683124 + i * 2, 3));
+                ls.Add(new Segment(32.904581 + i * 2, 36.783124 + i * 2, 4));
+                ls.Add(new Segment(20.904581 + i * 2, 21.783124 + i * 2, 4));
                 FlightPlan flpln = new FlightPlan(id, i, "Company_" + i, loc, ls);
                 ActiveFlightPlans.TryAdd(flpln.FlightId, flpln);
             }
