@@ -17,7 +17,7 @@ const flightPlanApi = "flightplan/";
 function App() {
     const [flightsList, setFlightList] = useState([]);
     const [flightClicked, setFlightClicked] = useState([]);
-    const [flightClickedPlan, setFlightClickedPlan] = useState(undefined);
+    const [flightClickedPlan, setFlightClickedPlan] = useState();
     const [errorAlert, setErrorAlert] = useState();
 
     const onErrorAlert = (error) => {
@@ -65,7 +65,7 @@ function App() {
 
     useEffect(() => {
         getFlightList();
-        // setInterval(getFlightList(), 1000);
+        setInterval(() => getFlightList(), 1000);
     }, [])
 
     return (

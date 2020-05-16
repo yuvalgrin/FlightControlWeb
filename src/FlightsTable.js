@@ -10,6 +10,7 @@ import {useCallback, useState} from "react";
 
 const urlPrefix = "https://localhost:5001/api/";
 const flightPlanApi = "flightplan";
+const flightsApi = "flights/";
 
 
 const FlightsTable = ({
@@ -47,7 +48,7 @@ const FlightsTable = ({
                     </button>
 
                     <button className={'link-button'} onClick={() =>
-                        deleteReq(urlPrefix + flightPlanApi + flight.flight_id, setErrorAlert)}>
+                        deleteReq(urlPrefix + flightsApi + flight.flight_id, setErrorAlert)}>
                         <img alt={'delete flight'} src={buttonPng}/>
                     </button>
                 </td>

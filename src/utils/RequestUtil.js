@@ -22,13 +22,14 @@ export const getAndUpdate = async (
 
 export const deleteReq = async (url, errorCallback) =>  {
     try {
-
         let resp = await fetch(url, {
             method: 'delete'
         })
+        handleErrors(resp);
+
     } catch (errorMessage) {
         if (errorCallback) {
-            errorCallback(errorMessage);
+            errorCallback(errorMessage.toString());
         } else {
             console.log("Error during getAndUpdate")
         }
@@ -37,7 +38,6 @@ export const deleteReq = async (url, errorCallback) =>  {
 
 export const postReq = async (url, data, errorCallback) =>  {
     try {
-
         let resp = await fetch(url, {
         method: 'post',
         headers: {
@@ -46,9 +46,10 @@ export const postReq = async (url, data, errorCallback) =>  {
         },
         body: JSON.stringify(data)
         })
+        handleErrors(resp);
     } catch (errorMessage) {
         if (errorCallback) {
-            errorCallback(errorMessage);
+            errorCallback(errorMessage.toString());
         } else {
             console.log("Error during getAndUpdate")
         }

@@ -5,7 +5,6 @@ import * as React from "react";
 
 const apiKey = 'AIzaSyAjngpsKv9PcK9NqXrHi8VdNi_5VI287CM';
 
-
 export class FlightMap extends React.Component  {
     /** This method will iterate all of the flight plans and print them into the Map object */
     createMarkers = () => Object.values(this.props.flightsList).map(value => this.getMarker(value))
@@ -40,16 +39,17 @@ export class FlightMap extends React.Component  {
     getLines = (flightPlan) => Object.values(flightPlan.segments).map(value => ({lat: value.latitude, lng: value.longitude}))
 
     getCenter = () => {
-        let flight = this.props.flightsList[0];
-        if (this.props.flightClicked)
-            flight = this.props.flightClicked;
-        return {lat: flight.latitude, lng: flight.longitude};
+        if (this.props.flightClicked.length !== 0)
+            return {lat: this.props.flightClicked.latitude, lng: this.props.flightClicked.longitude}
+        else
+            return {lat: '33.790755', lng: '37.203170'};
     }
+
 
     render() {
         return (
             <Map google={this.props.google} style={containerStyle}
-                 containerStyle={containerStyle} zoom={3} center={this.getCenter()}>
+                 containerStyle={containerStyle} zoom={4} center={this.getCenter()}>
                 {this.createMarkers()}
                 {this.createPolylines()}
             </Map>
