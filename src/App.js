@@ -6,7 +6,8 @@ import FlightMap from "./FlightMap";
 import FlightsTable from "./FlightsTable";
 import FlightDetails from "./FlightDetails";
 import {getAndUpdate} from './utils/RequestUtil';
-import { Container } from 'react-bootstrap';
+import alertPng from './resources/alert.png';
+import { Container, Toast } from 'react-bootstrap';
 
 const urlPrefix = "https://localhost:5001/api/";
 const flightsApi = "flights?relative_to=";
@@ -17,6 +18,15 @@ function App() {
     const [flightsList, setFlightList] = useState([]);
     const [flightClicked, setFlightClicked] = useState([]);
     const [flightClickedPlan, setFlightClickedPlan] = useState(undefined);
+    const [errorAlert, setErrorAlert] = useState();
+
+    const onErrorAlert = (error) => {
+        setErrorAlert(error);
+        setTimeout(() => {
+            setErrorAlert(undefined);
+        }, 5000);
+    }
+
     // const [isFlightListLoaded, setIsFlightListLoaded] = useState(false);
 
     const onFlightClick = (flight) => {
@@ -27,12 +37,30 @@ function App() {
     const getFlightList = () =>  {
         let date = format(new Date(), 'yyyy-MM-dd_HH:mm:ss');
         let url = urlPrefix + flightsApi + date;
-        getAndUpdate(url, setFlightList, undefined, undefined);
+        getAndUpdate(url, setFlightList, undefined, onErrorAlert);
     }
 
     const getFlightPlan = (id) => {
         let url = urlPrefix + flightPlanApi + id;
-        getAndUpdate(url, setFlightClickedPlan, undefined, undefined);
+        getAndUpdate(url, setFlightClickedPlan, undefined, onErrorAlert);
+    }
+
+    const getError = () => {
+        return (<div className={'alert'}>
+            <Toast>
+                <Toast.Header>
+                    <img src={alertPng} alt=''/>
+                    <strong>Oops...</strong>
+                    <small className={'alert-time'}>0 mins ago</small>
+                </Toast.Header>
+                <Toast.Body>{errorAlert}</Toast.Body>
+            </Toast>
+
+        {/*    <Alert key={'alert'} variant={'danger'}>*/}
+        {/*    <Alert.Heading>Oops</Alert.Heading>*/}
+        {/*    {errorAlert}*/}
+        {/*</Alert>*/}
+        </div>);
     }
 
     useEffect(() => {
@@ -42,7 +70,8 @@ function App() {
 
     return (
         <div className={'body'}>
-        <Container className={'grid-container'}>
+            {errorAlert?getError():''}
+            <Container className={'grid-container'}>
             <div className={'header'}>
                 <h1>Flight Simulator Web</h1>
             </div>
@@ -54,7 +83,8 @@ function App() {
                 <FlightDetails flightClicked={flightClicked}/>
             </div>
             <div className={'flight-table'} color={'black'}>
-                <FlightsTable flightsList={flightsList} flightClicked={flightClicked} setFlightClick={onFlightClick}/>
+                <FlightsTable flightsList={flightsList} flightClicked={flightClicked} setFlightClick={onFlightClick}
+                              setErrorAlert={onErrorAlert}/>
             </div>
         </Container>
         </div>

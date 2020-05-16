@@ -2,17 +2,21 @@ import * as React from 'react';
 import Table from 'react-bootstrap/Table';
 import buttonPng from './resources/button.png';
 import {useDropzone} from 'react-dropzone'
-import {deleteReq} from './utils/RequestUtil';
+import {deleteReq, postReq} from './utils/RequestUtil';
 import './FlightsTable.css';
 import fileuploadPng from './resources/file-upload.png';
 
 import {useCallback, useState} from "react";
 
+const urlPrefix = "https://localhost:5001/api/";
+const flightPlanApi = "flightplan";
+
 
 const FlightsTable = ({
                          flightsList,
                          flightClicked,
-                         setFlightClick
+                         setFlightClick,
+                          setErrorAlert
                      }) => {
     const [isDragOver, setIsDragOver] = useState(false);
 
@@ -42,7 +46,8 @@ const FlightsTable = ({
                             {flight.flight_id +'    '+ flight.company_name}
                     </button>
 
-                    <button className={'link-button'} onClick={() => deleteReq(flight.flight_id)}>
+                    <button className={'link-button'} onClick={() =>
+                        deleteReq(urlPrefix + flightPlanApi + flight.flight_id, setErrorAlert)}>
                         <img alt={'delete flight'} src={buttonPng}/>
                     </button>
                 </td>
@@ -50,6 +55,8 @@ const FlightsTable = ({
     }
 
     const onDrop = useCallback((acceptedFiles) => {
+        let url = urlPrefix + flightPlanApi;
+
         acceptedFiles.forEach((file) => {
             const reader = new FileReader()
 
@@ -58,6 +65,7 @@ const FlightsTable = ({
             reader.onload = () => {
                 // Do whatever you want with the file contents
                 const binaryStr = reader.result
+                postReq(url, binaryStr, setErrorAlert);
                 console.log(binaryStr)
             }
             reader.readAsArrayBuffer(file)
@@ -76,7 +84,7 @@ const FlightsTable = ({
 
     const getDragOverComp = () => {
         return (
-        <img className={'drag-drop-img'} src={fileuploadPng}/>
+        <img alt={'dragndrop'} className={'drag-drop-img'} src={fileuploadPng}/>
         )
     }
 

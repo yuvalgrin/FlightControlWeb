@@ -38,3 +38,14 @@ html {
     overflow-y: auto;
     max-height: calc(100vh - 85px - 400px)
 }
+
+.alert {
+    align-items: center;
+    position: absolute;
+    top: 0;
+    right: 0;
+}
+
+.alert-time {
+    right: 0;
+}

@@ -30,6 +30,9 @@
     /*input has OS specific font-family*/
 }
 
+*:focus {outline:none !important}
+
+
 .container {
     font-family: sans-serif;
 }
