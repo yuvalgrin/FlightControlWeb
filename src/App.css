@@ -9,7 +9,7 @@ html {
 .grid-container {
     display: grid;
     grid-template-columns: 1fr 0.3fr;
-    grid-template-rows: 47px 1fr 1fr;
+    grid-template-rows: 47px minmax(400px, 1fr) 1fr;
     gap: 10px 10px;
     grid-template-areas: "header header" "map flight-table" "details flight-table";}
 
@@ -24,13 +24,17 @@ html {
 .flight-table {
     grid-area: flight-table;
     overflow-y: auto;
-    max-height: calc(100vh - 120px)}
+    max-height: calc(100vh - 85px)
+}
 
 .map {
     grid-area: map;
     position: relative;
-    overflow: hidden;}
+    overflow: hidden;
+}
 
 .details {
     grid-area: details;
-    overflow-y: auto;}
+    overflow-y: auto;
+    max-height: calc(100vh - 85px - 400px)
+}

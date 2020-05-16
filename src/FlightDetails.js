@@ -1,7 +1,5 @@
 import * as React from 'react';
-import { useState } from 'react';
 import Table from 'react-bootstrap/Table';
-import Mark_flight from './FlightDetails.css';
 
 const FlightDetails = ({flightClicked}) => {
     let items = [];

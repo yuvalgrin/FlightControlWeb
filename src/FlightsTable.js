@@ -1,23 +1,20 @@
 import * as React from 'react';
-import { useState } from 'react';
 import Table from 'react-bootstrap/Table';
 import buttonPng from './resources/button.png';
-import Dropzone from 'react-dropzone';
+import {useDropzone} from 'react-dropzone'
+import {deleteReq} from './utils/RequestUtil';
+import './FlightsTable.css';
+import fileuploadPng from './resources/file-upload.png';
 
+import {useCallback, useState} from "react";
 
-import Mark_flight from './FlightsTable.css';
-import {format} from "date-fns";
-import {deleteReq, getAndUpdate} from './utils/RequestUtil';
-
-const urlPrefix = "https://localhost:5001/api/";
-const flightsApi = "flights/";
 
 const FlightsTable = ({
                          flightsList,
                          flightClicked,
                          setFlightClick
                      }) => {
-    const [uploadFileMode, setIsUploadFileMode] = useState(false);
+    const [isDragOver, setIsDragOver] = useState(false);
 
     const getLocalFlights = () => {
         if (flightsList)
@@ -30,39 +27,77 @@ const FlightsTable = ({
     }
 
     const createRow = (flight, localFlights) => {
-        if (localFlights && flight.is_external || !localFlights && !flight.is_external)
+        if ((localFlights && flight.is_external) || (!localFlights && !flight.is_external))
             return;
 
         let markFlight = false;
-        if (flightClicked && flight.flight_id == flightClicked.flight_id){
+        if (flightClicked && flight.flight_id === flightClicked.flight_id){
             markFlight = true;
         }
         return (
             <tr key={flight.flight_id}>
                 <td>
-                    {/*{markFlight?<p className={Mark_flight}>{item.flight_id}</p>:*/}
-                    <a id='flightId' title='click to watch flight'
-                       href='#' onClick={() => setFlightClick(flight)}>{markFlight?
-                        <b><u>{flight.flight_id +'  '+ flight.company_name}</u></b>:
-                        flight.flight_id +' '+ flight.company_name}</a>
+                    <button className={markFlight?'mark-flight':'regular-flight'} title='watch flight'
+                       onClick={() => setFlightClick(flight)}>
+                            {flight.flight_id +'    '+ flight.company_name}
+                    </button>
 
-                    <a id='flightId' title='click to watch flight'
-                       href='#' onClick={() => deleteReq(flight.flight_id)}>
-                        <img src={buttonPng} align={'right'}/>
-                    </a>
+                    <button className={'link-button'} onClick={() => deleteReq(flight.flight_id)}>
+                        <img alt={'delete flight'} src={buttonPng}/>
+                    </button>
                 </td>
             </tr>)
     }
 
-    return (
-        <Dropzone>
-            <Table striped bordered hover variant="dark">
+    const onDrop = useCallback((acceptedFiles) => {
+        acceptedFiles.forEach((file) => {
+            const reader = new FileReader()
+
+            reader.onabort = () => console.log('file reading was aborted')
+            reader.onerror = () => console.log('file reading has failed')
+            reader.onload = () => {
+                // Do whatever you want with the file contents
+                const binaryStr = reader.result
+                console.log(binaryStr)
+            }
+            reader.readAsArrayBuffer(file)
+        })
+        onDragLeave();
+    }, [])
+
+
+    const onDragEnter = () => {setIsDragOver(true)}
+    const onDragLeave = () => {setIsDragOver(false)}
+
+    const {getRootProps, getInputProps} = useDropzone({onDrop,
+        onDragEnter,
+        onDragLeave,
+        noClick: true})
+
+    const getDragOverComp = () => {
+        return (
+        <img className={'drag-drop-img'} src={fileuploadPng}/>
+        )
+    }
+
+    const getTableComp = (isDragOver) => {
+        return (
+            <Table className={isDragOver?'dropzone-disabled':''}>
                 <tbody>
                 {getLocalFlights()}
                 {getServersFlights()}
                 </tbody>
-            </Table>
-        </Dropzone>
+            </Table>)
+    }
+
+    return (
+        <div className={'container'}>
+            <div {...getRootProps({className: isDragOver?'dropzone':'dropzone.disabled'})}>
+            <input {...getInputProps()} />
+                {getTableComp(isDragOver)}
+                {isDragOver?getDragOverComp():''}
+            </div>
+        </div>
 
     );
 };

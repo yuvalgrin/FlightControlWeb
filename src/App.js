@@ -17,7 +17,7 @@ function App() {
     const [flightsList, setFlightList] = useState([]);
     const [flightClicked, setFlightClicked] = useState([]);
     const [flightClickedPlan, setFlightClickedPlan] = useState(undefined);
-    const [isFlightListLoaded, setIsFlightListLoaded] = useState(false);
+    // const [isFlightListLoaded, setIsFlightListLoaded] = useState(false);
 
     const onFlightClick = (flight) => {
         setFlightClicked(flight);
@@ -27,7 +27,7 @@ function App() {
     const getFlightList = () =>  {
         let date = format(new Date(), 'yyyy-MM-dd_HH:mm:ss');
         let url = urlPrefix + flightsApi + date;
-        getAndUpdate(url, setFlightList, setIsFlightListLoaded, undefined);
+        getAndUpdate(url, setFlightList, undefined, undefined);
     }
 
     const getFlightPlan = (id) => {
