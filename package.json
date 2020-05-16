@@ -36,6 +36,7 @@
     ]
   },
   "devDependencies": {
-    "google-map-react": "^1.1.7"
+    "google-map-react": "^1.1.7",
+    "react-dropzone": "^11.0.1"
   }
 }

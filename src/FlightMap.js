@@ -1,5 +1,6 @@
 import {Map, Polyline, Marker, GoogleApiWrapper} from 'google-maps-react';
-import planePng from './resources/pngwave.png';
+import planePng from './resources/regular-airplane.png';
+import markedPlanePng from './resources/marked-airplane.png';
 import * as React from "react";
 import {format} from "date-fns";
 import {getAndUpdate} from "./utils/RequestUtil";
@@ -20,7 +21,7 @@ export class FlightMap extends React.Component  {
         return <Marker onClick={() => this.props.setFlightClick(flight)}
                         position = {{lat: flight.latitude, lng: flight.longitude}}
                         icon={{
-                            url: isClicked ? planePng : planePng,
+                            url: isClicked ? markedPlanePng : planePng,
                             position: {lat: flight.latitude, lng: flight.longitude},
                             origin: this.props.google.maps.Point(0, 0),
                             anchor: this.props.google.maps.Point(0, 32) }}

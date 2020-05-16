@@ -3,3 +3,11 @@
     background-color: white;
     font-size: 120%;
 }
+
+#flightId {
+    color: white;
+}
+
+#deleteFlight {
+    text-align: right;
+}

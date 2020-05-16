@@ -8,7 +8,7 @@ html {
 
 .grid-container {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    grid-template-columns: 1fr 0.3fr;
     grid-template-rows: 47px 1fr 1fr;
     gap: 10px 10px;
     grid-template-areas: "header header" "map flight-table" "details flight-table";}
@@ -23,7 +23,8 @@ html {
 
 .flight-table {
     grid-area: flight-table;
-    overflow: hidden;}
+    overflow-y: auto;
+    max-height: calc(100vh - 120px)}
 
 .map {
     grid-area: map;
@@ -32,4 +33,4 @@ html {
 
 .details {
     grid-area: details;
-    overflow: hidden;}
+    overflow-y: auto;}

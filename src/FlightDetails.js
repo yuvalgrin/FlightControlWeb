@@ -8,8 +8,8 @@ const FlightDetails = ({flightClicked}) => {
     if (flightClicked) {
         for (let [key, value] of Object.entries(flightClicked)) {
             items.push(
-            <tr key={key}>
-                <td>{key}</td>
+            <tr height='10' key={key}>
+                <td width='100'>{key}</td>
                 <td>{value}</td>
             </tr>
             )
