@@ -14,9 +14,9 @@ namespace FlightControlWeb.Controllers
     public class FlightsController : Controller
     {
         [HttpGet]
-        public string Get([FromQuery] DateTime relativeTo, [FromQuery] bool syncAll)
+        public string Get([FromQuery] DateTime relative_to, [FromQuery] bool syncAll)
         {
-            List<Flight> flights = FlightsManager.Instance.GetRelativeFlights(relativeTo, syncAll);
+            List<Flight> flights = FlightsManager.Instance.GetRelativeFlights(relative_to, syncAll);
             return JsonConvert.SerializeObject(flights, Formatting.Indented);
         }
 

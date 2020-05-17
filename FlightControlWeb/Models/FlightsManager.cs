@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
+using FlightControlWeb.Models.Algo;
 using FlightControlWeb.Models.JsonModels;
 
 namespace FlightControlWeb.Models
@@ -43,10 +44,37 @@ namespace FlightControlWeb.Models
             else
                 flights  = new List<Flight>();
 
-            // Always add local flights
-            flights.AddRange(ActiveFlights.Values);
+            // Always add local flights TODO: UTC time
+            foreach (Flight fl in ActiveFlights.Values)
+            {
+                ActiveFlightPlans.TryGetValue(fl.FlightId, out FlightPlan flightPlan);
+                if (dateTime < flightPlan.InitialLocation.DateTime)
+                    continue;
+
+                if (dateTime > getLandingDatetime(flightPlan))
+                    continue;
+
+                Location currentLocation =
+                    LocationInterpolator.GetLocation(flightPlan, dateTime);
+
+                fl.Latitude = currentLocation.Latitude;
+                fl.Longitude = currentLocation.Longitude;
+
+                flights.Add(fl);
+            }
 
             return flights;
+        }
+
+        private DateTime getLandingDatetime(FlightPlan flightPlan)
+        {
+            long seconds = 0;
+            foreach (Segment segment in flightPlan.Segments)
+            {
+                seconds += segment.Seconds;
+            }
+
+            return flightPlan.InitialLocation.DateTime.AddSeconds(seconds);
         }
 
         /**
@@ -89,15 +117,15 @@ namespace FlightControlWeb.Models
                 int num = 750 + i;
                 string id = "EL" + num;
                 Flight fl = new Flight(id, 32.704581+i*2, 35.583124+i * 2, i, "Company_"+i,
-                new DateTime(), false);
+                DateTime.UtcNow, false);
                 ActiveFlights.TryAdd(fl.FlightId, fl);
 
-                Location loc = new Location(0,0, new DateTime());
+                Location loc = new Location(32.704581, 35.583124, DateTime.UtcNow);
                 List<Segment> ls = new List<Segment>();
-                ls.Add(new Segment(32.704581 + i * 2, 35.583124 + i * 2, 2));
-                ls.Add(new Segment(33.804581 + i * 2, 35.683124 + i * 2, 3));
-                ls.Add(new Segment(32.904581 + i * 2, 36.783124 + i * 2, 4));
-                ls.Add(new Segment(20.904581 + i * 2, 21.783124 + i * 2, 4));
+                ls.Add(new Segment(32.704581 + i * 2, 35.583124 + i * 2, 20));
+                ls.Add(new Segment(33.804581 + i * 2, 35.683124 + i * 2, 30));
+                ls.Add(new Segment(32.904581 + i * 2, 36.783124 + i * 2, 40));
+                ls.Add(new Segment(20.904581 + i * 2, 21.783124 + i * 2, 40));
                 FlightPlan flpln = new FlightPlan(id, i, "Company_" + i, loc, ls);
                 ActiveFlightPlans.TryAdd(flpln.FlightId, flpln);
             }
@@ -105,15 +133,15 @@ namespace FlightControlWeb.Models
             int numm = 750 + 7;
             string idd = "EL" + numm;
             Flight fll = new Flight(idd, 20.704581, 25.583124, 7, "Company_" + 7,
-            new DateTime(), false);
+            DateTime.UtcNow, false);
             ActiveFlights.TryAdd(fll.FlightId, fll);
 
-            Location locc = new Location(20.704581, 25.583124, new DateTime());
+            Location locc = new Location(20.704581, 25.583124, DateTime.UtcNow);
 
             List<Segment> lss = new List<Segment>();
-            lss.Add(new Segment(22.704581, 25.583124, 2));
-            lss.Add(new Segment(23.804581, 25.683124, 3));
-            lss.Add(new Segment(22.904581, 26.783124, 4));
+            lss.Add(new Segment(22.704581, 25.583124, 50));
+            lss.Add(new Segment(21.804581, 29.683124, 50));
+            lss.Add(new Segment(22.904581, 26.783124, 50));
             FlightPlan flplnn = new FlightPlan(idd, 8, "Company_" + 7, locc, lss);
             ActiveFlightPlans.TryAdd(flplnn.FlightId, flplnn);
         }
