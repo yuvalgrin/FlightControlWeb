@@ -35,8 +35,10 @@ function App() {
     }
 
     const getFlightList = () =>  {
-        let date = format(new Date(), 'yyyy-MM-dd_HH:mm:ss');
-        let url = urlPrefix + flightsApi + date;
+        let now = new Date();
+        let utc = new Date(now.getTime() + now.getTimezoneOffset() * 60000);
+        let dateUtc = format(utc, 'yyyy-MM-dd HH:mm:ss');
+        let url = urlPrefix + flightsApi + dateUtc;
         getAndUpdate(url, setFlightList, undefined, onErrorAlert);
     }
 
