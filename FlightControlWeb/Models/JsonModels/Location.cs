@@ -4,11 +4,12 @@ namespace FlightControlWeb.Models.JsonModels
 {
     public class Location
     {
+        public Location() { }
         public Location(double longitude, double latitude, DateTime dateTime)
         {
             this.Longitude = longitude;
             this.Latitude = latitude;
-            this.DateTime = dateTime;
+            this.Date_Time = dateTime;
         }
 
         [JsonProperty("longitude")]
@@ -18,6 +19,6 @@ namespace FlightControlWeb.Models.JsonModels
         public double Latitude { get; set; }
 
         [JsonProperty("date_time")]
-        public DateTime DateTime { get; set; }
+        public DateTime Date_Time { get; set; }
     }
 }

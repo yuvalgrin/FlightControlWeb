@@ -8,14 +8,14 @@ namespace FlightControlWeb.Models.Algo
 
         public static Location GetLocation(FlightPlan flightPlan, DateTime dateTime)
         {
-            TimeSpan timeSpan = dateTime - flightPlan.InitialLocation.DateTime;
+            TimeSpan timeSpan = dateTime - flightPlan.Initial_Location.Date_Time;
             long airtimeSeconds = timeSpan.Seconds;
             long seconds = 0;
             Segment currentSeg = null;
             Segment lastSeg = null;
             foreach (Segment segment in flightPlan.Segments)
             {
-                seconds += segment.Seconds;
+                seconds += segment.Timespan_Seconds;
                 if (seconds >= airtimeSeconds)
                 {
                     currentSeg = segment;
@@ -24,10 +24,10 @@ namespace FlightControlWeb.Models.Algo
                 lastSeg = segment;
             }
 
-            long secInSegment = currentSeg.Seconds - (airtimeSeconds - seconds);
-            double fraction = secInSegment / currentSeg.Seconds;
+            long secInSegment = currentSeg.Timespan_Seconds - (airtimeSeconds - seconds);
+            double fraction = secInSegment / currentSeg.Timespan_Seconds;
 
-            Location fromLocation = flightPlan.InitialLocation;
+            Location fromLocation = flightPlan.Initial_Location;
             if (lastSeg != null)
             {
                 fromLocation = new Location(lastSeg.Latitude, lastSeg.Longitude,

@@ -21,7 +21,7 @@ namespace FlightControlWeb.Controllers
         }
 
         [HttpPost]
-        public void Post([FromHeader] FlightPlan flightPlan)
+        public void Post([FromBody] FlightPlan flightPlan)
         {
             FlightsManager.Instance.AddFlightPlan(flightPlan);
         }

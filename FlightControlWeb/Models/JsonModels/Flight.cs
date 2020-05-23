@@ -4,21 +4,22 @@ namespace FlightControlWeb.Models.JsonModels
 {
     public class Flight
     {
+        public Flight() { }
         public Flight(string flightId, double longitude, double latitude,
             int passengers, string companyName, DateTime dateTime,
             bool isExternal)
         {
-            this.FlightId = flightId;
+            this.Flight_Id = flightId;
             this.Longitude = longitude;
             this.Latitude = latitude;
             this.Passengers = passengers;
-            this.CompanyName = companyName;
-            this.DateTime = dateTime;
-            this.IsExternal = isExternal;
+            this.Company_Name = companyName;
+            this.Date_Time = dateTime;
+            this.Is_External = isExternal;
         }
 
         [JsonProperty("flight_id")]
-        public string FlightId { get; set; }
+        public string Flight_Id { get; set; }
 
         [JsonProperty("longitude")]
         public double Longitude { get; set; }
@@ -30,13 +31,13 @@ namespace FlightControlWeb.Models.JsonModels
         public int Passengers { get; set; }
 
         [JsonProperty("company_name")]
-        public string CompanyName { get; set; }
+        public string Company_Name { get; set; }
 
         [JsonProperty("date_time")]
-        public DateTime DateTime { get; set; }
+        public DateTime Date_Time { get; set; }
 
         [JsonProperty("is_external")]
-        public bool IsExternal { get; set; }
+        public bool Is_External { get; set; }
 
     }
 }

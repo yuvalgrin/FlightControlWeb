@@ -47,8 +47,8 @@ namespace FlightControlWeb.Models
             // Always add local flights TODO: UTC time
             foreach (Flight fl in ActiveFlights.Values)
             {
-                ActiveFlightPlans.TryGetValue(fl.FlightId, out FlightPlan flightPlan);
-                if (dateTime < flightPlan.InitialLocation.DateTime)
+                ActiveFlightPlans.TryGetValue(fl.Flight_Id, out FlightPlan flightPlan);
+                if (dateTime < flightPlan.Initial_Location.Date_Time)
                     continue;
 
                 if (dateTime > getLandingDatetime(flightPlan))
@@ -71,10 +71,10 @@ namespace FlightControlWeb.Models
             long seconds = 0;
             foreach (Segment segment in flightPlan.Segments)
             {
-                seconds += segment.Seconds;
+                seconds += segment.Timespan_Seconds;
             }
 
-            return flightPlan.InitialLocation.DateTime.AddSeconds(seconds);
+            return flightPlan.Initial_Location.Date_Time.AddSeconds(seconds);
         }
 
         /**
@@ -112,38 +112,38 @@ namespace FlightControlWeb.Models
         public void InitDummies()
         {
             // Dummy flight!!!
-            for (int i=0; i < 5 ; i++)
+            for (int i=1; i < 5 ; i++)
             {
                 int num = 750 + i;
                 string id = "EL" + num;
                 Flight fl = new Flight(id, 32.704581+i*2, 35.583124+i * 2, i, "Company_"+i,
                 DateTime.UtcNow, false);
-                ActiveFlights.TryAdd(fl.FlightId, fl);
+                ActiveFlights.TryAdd(fl.Flight_Id, fl);
 
                 Location loc = new Location(32.704581, 35.583124, DateTime.UtcNow);
                 List<Segment> ls = new List<Segment>();
-                ls.Add(new Segment(32.704581 + i * 2, 35.583124 + i * 2, 20));
-                ls.Add(new Segment(33.804581 + i * 2, 35.683124 + i * 2, 30));
-                ls.Add(new Segment(32.904581 + i * 2, 36.783124 + i * 2, 40));
-                ls.Add(new Segment(20.904581 + i * 2, 21.783124 + i * 2, 40));
+                ls.Add(new Segment(32.704581 + i * 2, 35.583124 + i * 2, 120));
+                ls.Add(new Segment(33.804581 + i * 2, 35.683124 + i * 2, 130));
+                ls.Add(new Segment(32.904581 + i * 2, 36.783124 + i * 2, 140));
+                ls.Add(new Segment(20.904581 + i * 2, 21.783124 + i * 2, 140));
                 FlightPlan flpln = new FlightPlan(id, i, "Company_" + i, loc, ls);
-                ActiveFlightPlans.TryAdd(flpln.FlightId, flpln);
+                ActiveFlightPlans.TryAdd(flpln.Flight_Id, flpln);
             }
 
             int numm = 750 + 7;
             string idd = "EL" + numm;
             Flight fll = new Flight(idd, 20.704581, 25.583124, 7, "Company_" + 7,
             DateTime.UtcNow, false);
-            ActiveFlights.TryAdd(fll.FlightId, fll);
+            ActiveFlights.TryAdd(fll.Flight_Id, fll);
 
             Location locc = new Location(20.704581, 25.583124, DateTime.UtcNow);
 
             List<Segment> lss = new List<Segment>();
-            lss.Add(new Segment(22.704581, 25.583124, 50));
-            lss.Add(new Segment(21.804581, 29.683124, 50));
-            lss.Add(new Segment(22.904581, 26.783124, 50));
+            lss.Add(new Segment(22.704581, 25.583124, 150));
+            lss.Add(new Segment(21.804581, 29.683124, 150));
+            lss.Add(new Segment(22.904581, 26.783124, 150));
             FlightPlan flplnn = new FlightPlan(idd, 8, "Company_" + 7, locc, lss);
-            ActiveFlightPlans.TryAdd(flplnn.FlightId, flplnn);
+            ActiveFlightPlans.TryAdd(flplnn.Flight_Id, flplnn);
         }
 
     }

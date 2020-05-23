@@ -4,11 +4,13 @@ namespace FlightControlWeb.Models.JsonModels
 {
     public class Segment
     {
+        public Segment() { }
+
         public Segment(double longitude, double latitude, int seconds)
         {
             this.Longitude = longitude;
             this.Latitude = latitude;
-            this.Seconds = seconds;
+            this.Timespan_Seconds = seconds;
         }
 
         [JsonProperty("longitude")]
@@ -18,6 +20,6 @@ namespace FlightControlWeb.Models.JsonModels
         public double Latitude { get; set; }
 
         [JsonProperty("timespan_seconds")]
-        public int Seconds { get; set; }
+        public int Timespan_Seconds { get; set; }
     }
 }

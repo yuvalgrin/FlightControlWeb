@@ -4,6 +4,8 @@ namespace FlightControlWeb.Models.JsonModels
 {
     public class Server
     {
+        public Server() { }
+
         public Server(string serverId, string serverUrl)
         {
             this.ServerId = serverId;
