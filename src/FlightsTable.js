@@ -21,16 +21,19 @@ const FlightsTable = ({
                      }) => {
     const [isDragOver, setIsDragOver] = useState(false);
 
+    /** Get only local flights */
     const getLocalFlights = () => {
         if (flightsList)
             return flightsList.map(item => {return createRow(item, true)})
     }
 
+    /** Get only local flights */
     const getServersFlights = () => {
         if (flightsList)
             return flightsList.map(item => {return createRow(item, false)})
     }
 
+    /** Create a table row with company name - flight id */
     const createRow = (flight, localFlights) => {
         if ((localFlights && flight.is_external) || (!localFlights && !flight.is_external))
             return;
@@ -55,16 +58,17 @@ const FlightsTable = ({
             </tr>)
     }
 
+    /** Actions done when droping a file */
     const onDrop = useCallback((acceptedFiles) => {
         let url = urlPrefix + flightPlanApi;
 
         acceptedFiles.forEach((file) => {
             const reader = new FileReader()
 
-            reader.onabort = () => console.log('file reading was aborted')
-            reader.onerror = () => console.log('file reading has failed')
+            reader.onabort = () => setErrorAlert('file reading was aborted')
+            reader.onerror = () => setErrorAlert('file reading has failed')
             reader.onload = () => {
-                // Do whatever you want with the file contents
+                // Send file content to server side as a post request
                 const binaryStr = reader.result
                 postReq(url, binaryStr, setErrorAlert);
                 console.log(binaryStr)
@@ -83,12 +87,16 @@ const FlightsTable = ({
         onDragLeave,
         noClick: true})
 
+    /** Generates the img and animation for drag-and-drop */
     const getDragOverComp = () => {
         return (
         <img alt={'dragndrop'} className={'drag-drop-img'} src={fileuploadPng}/>
         )
     }
 
+    /** Generate the table component
+     * First local flights,
+     * Afterwards the remote servers flights */
     const getTableComp = (isDragOver) => {
         return (
             <Table className={isDragOver?'dropzone-disabled':''}>

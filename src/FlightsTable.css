@@ -14,9 +14,7 @@
     background: none!important;
     border: none;
     padding: 0!important;
-    /*optional*/
     font-family: sans-serif;
-    /*input has OS specific font-family*/
     color: white;
 }
 
@@ -25,9 +23,7 @@
     background: none!important;
     border: none;
     padding: 0!important;
-    /*optional*/
     font-family: sans-serif;
-    /*input has OS specific font-family*/
 }
 
 *:focus {outline:none !important}
@@ -63,8 +59,7 @@
 }
 
 .drag-drop-img {
-    position: absolute;
-    top: 0;
-    bottom: 0;
+    position: relative;
+    bottom: 50px;
     margin: auto;
 }

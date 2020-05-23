@@ -7,7 +7,7 @@ import FlightsTable from "./FlightsTable";
 import FlightDetails from "./FlightDetails";
 import {getAndUpdate} from './utils/RequestUtil';
 import alertPng from './resources/alert.png';
-import { Container, Toast } from 'react-bootstrap';
+import { Container, Alert } from 'react-bootstrap';
 
 const urlPrefix = "https://localhost:5001/api/";
 const flightsApi = "flights?relative_to=";
@@ -19,21 +19,27 @@ function App() {
     const [flightClicked, setFlightClicked] = useState([]);
     const [flightClickedPlan, setFlightClickedPlan] = useState();
     const [errorAlert, setErrorAlert] = useState();
+    // const [isFlightListLoaded, setIsFlightListLoaded] = useState(false);
 
+
+    /** Let each error show for 5 secs */
     const onErrorAlert = (error) => {
+        if (errorAlert !== undefined)
+            return
+
         setErrorAlert(error);
         setTimeout(() => {
             setErrorAlert(undefined);
         }, 5000);
     }
 
-    // const [isFlightListLoaded, setIsFlightListLoaded] = useState(false);
-
+    /** On flight click get its flight plan */
     const onFlightClick = (flight) => {
         setFlightClicked(flight);
         getFlightPlan(flight.flight_id);
     }
 
+    /** Update the flight list with UTC time */
     const getFlightList = () =>  {
         let now = new Date();
         let utc = new Date(now.getTime() + now.getTimezoneOffset() * 60000);
@@ -42,29 +48,24 @@ function App() {
         getAndUpdate(url, setFlightList, undefined, onErrorAlert);
     }
 
+    /** Request the flight plan */
     const getFlightPlan = (id) => {
         let url = urlPrefix + flightPlanApi + id;
         getAndUpdate(url, setFlightClickedPlan, undefined, onErrorAlert);
     }
 
+
+    /** Create error component */
     const getError = () => {
         return (<div className={'alert'}>
-            <Toast>
-                <Toast.Header>
-                    <img src={alertPng} alt=''/>
-                    <strong>Oops...</strong>
-                    <small className={'alert-time'}>0 mins ago</small>
-                </Toast.Header>
-                <Toast.Body>{errorAlert}</Toast.Body>
-            </Toast>
-
-        {/*    <Alert key={'alert'} variant={'danger'}>*/}
-        {/*    <Alert.Heading>Oops</Alert.Heading>*/}
-        {/*    {errorAlert}*/}
-        {/*</Alert>*/}
+            <Alert key={'alert'} variant={'danger'}>
+            <Alert.Heading><img alt={'alertImg'} src={alertPng}/>Oops</Alert.Heading>
+            {errorAlert}
+        </Alert>
         </div>);
     }
 
+    /** On application load to screen */
     useEffect(() => {
         getFlightList();
         setInterval(() => getFlightList(), 1000);
@@ -84,7 +85,7 @@ function App() {
             <div className={'details'}>
                 <FlightDetails flightClicked={flightClicked}/>
             </div>
-            <div className={'flight-table'} color={'black'}>
+            <div className={'flight-table'}>
                 <FlightsTable flightsList={flightsList} flightClicked={flightClicked} setFlightClick={onFlightClick}
                               setErrorAlert={onErrorAlert}/>
             </div>

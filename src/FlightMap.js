@@ -1,9 +1,13 @@
 import {Map, Polyline, Marker, GoogleApiWrapper} from 'google-maps-react';
 import planePng from './resources/regular-airplane-24.png';
 import markedPlanePng from './resources/marked-airplane-27.png';
+import './FlightMap.css';
 import * as React from "react";
 
 const apiKey = 'AIzaSyAjngpsKv9PcK9NqXrHi8VdNi_5VI287CM';
+const defaultLat = '33.790755';
+const defaultLon = '37.203170';
+
 
 export class FlightMap extends React.Component  {
     /** This method will iterate all of the flight plans and print them into the Map object */
@@ -12,13 +16,12 @@ export class FlightMap extends React.Component  {
     /** Get the markers from flights list */
     getMarker = (flight)  => {
         let isClicked = false;
-        if (this.props.flightClicked === flight)
+        if (this.props.flightClicked && this.props.flightClicked.flight_id === flight.flight_id)
             isClicked = true;
         return <Marker key={flight.flight_id} onClick={() => this.props.setFlightClick(flight)}
                         position = {{lat: flight.latitude, lng: flight.longitude}}
                         icon={{
                             url: isClicked ? markedPlanePng : planePng,
-                            scaledSize: this.props.google.maps.Size(10, 10),
                             position: {lat: flight.latitude, lng: flight.longitude},
                              }}
                         name={flight.flight_id} />;
@@ -38,31 +41,24 @@ export class FlightMap extends React.Component  {
 
     getLines = (flightPlan) => Object.values(flightPlan.segments).map(value => ({lat: value.latitude, lng: value.longitude}))
 
+    /** Center into clicked flight else to default location */
     getCenter = () => {
         if (this.props.flightClicked.length !== 0)
             return {lat: this.props.flightClicked.latitude, lng: this.props.flightClicked.longitude}
         else
-            return {lat: '33.790755', lng: '37.203170'};
+            return {lat: defaultLat, lng: defaultLon};
     }
 
 
     render() {
         return (
-            <Map google={this.props.google} style={containerStyle}
-                 containerStyle={containerStyle} zoom={4} center={this.getCenter()}>
+            <Map google={this.props.google} style={'map-container'}
+                 containerStyle={'map-container'} zoom={4} center={this.getCenter()}>
                 {this.createMarkers()}
                 {this.createPolylines()}
             </Map>
         );
     }
-}
-
-const containerStyle = {
-    position: 'absolute',
-    left: 0,
-    right: 0,
-    top: 0,
-    bottom: 0
 }
 
 export default GoogleApiWrapper({

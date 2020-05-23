@@ -2,27 +2,23 @@ import * as React from 'react';
 import Table from 'react-bootstrap/Table';
 
 const FlightDetails = ({flightClicked}) => {
-    let items = [];
-    if (flightClicked) {
-        for (let [key, value] of Object.entries(flightClicked)) {
-            items.push(
-            <tr height='10' key={key}>
+
+    //Create the detail rows
+    const createRows = () => Object.entries(flightClicked).map(([key, value]) => getRow(key, value))
+    const getRow = (key, value) => {
+        return (
+            <tr key={key}>
                 <td width='100'>{key}</td>
                 <td>{value}</td>
-            </tr>
-            )
-        }
+            </tr>)
     }
-
-    // const createRows = () => Object.entries(flightClicked).map(key, value => this.getMarker(value))
-
 
     return (
         <Table striped bordered hover variant="dark">
             <thead>
             </thead>
             <tbody>
-            {items}
+            {flightClicked?createRows():''}
             </tbody>
         </Table>
 
