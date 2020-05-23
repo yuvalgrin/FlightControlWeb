@@ -8,6 +8,9 @@ import FlightDetails from "./FlightDetails";
 import {getAndUpdate} from './utils/RequestUtil';
 import alertPng from './resources/alert.png';
 import { Container, Alert } from 'react-bootstrap';
+import Fade from "react-bootstrap/Fade";
+import Collapse from "react-bootstrap/Collapse";
+
 
 const urlPrefix = "https://localhost:5001/api/";
 const flightsApi = "flights?relative_to=";
@@ -24,7 +27,7 @@ function App() {
 
     /** Let each error show for 5 secs */
     const onErrorAlert = (error) => {
-        if (errorAlert !== undefined)
+        if (errorAlert != undefined)
             return
 
         setErrorAlert(error);
@@ -57,12 +60,12 @@ function App() {
 
     /** Create error component */
     const getError = () => {
-        return (<div className={'alert'}>
-            <Alert key={'alert'} variant={'danger'}>
-            <Alert.Heading><img alt={'alertImg'} src={alertPng}/>Oops</Alert.Heading>
-            {errorAlert}
-        </Alert>
-        </div>);
+        return (
+                <Alert key={'alert'} variant={'danger'}>
+                <Alert.Heading><img alt={'alertImg'} src={alertPng}/>Oops</Alert.Heading>
+                {errorAlert}
+                </Alert>
+        );
     }
 
     /** On application load to screen */
