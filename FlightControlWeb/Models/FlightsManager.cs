@@ -19,13 +19,11 @@ namespace FlightControlWeb.Models
             }
         }
 
-        public ConcurrentDictionary<string, Flight> ActiveFlights { get; set; }
         public ConcurrentDictionary<string, FlightPlan> ActiveFlightPlans { get; set; }
 
 
         public FlightsManager()
         {
-            ActiveFlights = new ConcurrentDictionary<string, Flight>();
             ActiveFlightPlans = new ConcurrentDictionary<string, FlightPlan>();
             InitDummies();
         }
@@ -45,28 +43,23 @@ namespace FlightControlWeb.Models
                 flights  = new List<Flight>();
 
             // Always add local flights TODO: UTC time
-            foreach (Flight fl in ActiveFlights.Values)
+            foreach (FlightPlan flightPlan in ActiveFlightPlans.Values)
             {
-                ActiveFlightPlans.TryGetValue(fl.Flight_Id, out FlightPlan flightPlan);
                 if (dateTime < flightPlan.Initial_Location.Date_Time)
                     continue;
 
-                if (dateTime > getLandingDatetime(flightPlan))
+                if (dateTime > GetLandingDatetime(flightPlan))
                     continue;
 
-                Location currentLocation =
-                    LocationInterpolator.GetLocation(flightPlan, dateTime);
+                Flight flight = GetFlightFromPlan(flightPlan, dateTime);
 
-                fl.Latitude = currentLocation.Latitude;
-                fl.Longitude = currentLocation.Longitude;
-
-                flights.Add(fl);
+                flights.Add(flight);
             }
 
             return flights;
         }
 
-        private DateTime getLandingDatetime(FlightPlan flightPlan)
+        private DateTime GetLandingDatetime(FlightPlan flightPlan)
         {
             long seconds = 0;
             foreach (Segment segment in flightPlan.Segments)
@@ -77,12 +70,28 @@ namespace FlightControlWeb.Models
             return flightPlan.Initial_Location.Date_Time.AddSeconds(seconds);
         }
 
+        private Flight GetFlightFromPlan(FlightPlan flightPlan, DateTime dateTime)
+        {
+            Location currentLocation =
+                LocationInterpolator.GetLocation(flightPlan, dateTime);
+            string flightId = flightPlan.Flight_Id;
+            double longitude = currentLocation.Longitude;
+            double latitude = currentLocation.Latitude;
+            int passengers = flightPlan.Passengers;
+            string companyName = flightPlan.Company_Name;
+
+            Flight flight = new Flight(flightId, longitude, latitude, passengers,
+                companyName, dateTime, false);
+
+            return flight;
+        }
+
         /**
          * Delete a specific flight from this server.
          */
-        public bool DeleteFlight(string flightId)
+        public bool DeleteFlightPlan(string flightId)
         {
-            return ActiveFlights.TryRemove(flightId, out _);
+            return ActiveFlightPlans.TryRemove(flightId, out _);
         }
 
 
@@ -116,9 +125,6 @@ namespace FlightControlWeb.Models
             {
                 int num = 750 + i;
                 string id = "EL" + num;
-                Flight fl = new Flight(id, 32.704581+i*2, 35.583124+i * 2, i, "Company_"+i,
-                DateTime.UtcNow, false);
-                ActiveFlights.TryAdd(fl.Flight_Id, fl);
 
                 Location loc = new Location(32.704581, 35.583124, DateTime.UtcNow);
                 List<Segment> ls = new List<Segment>();
@@ -132,9 +138,6 @@ namespace FlightControlWeb.Models
 
             int numm = 750 + 7;
             string idd = "EL" + numm;
-            Flight fll = new Flight(idd, 20.704581, 25.583124, 7, "Company_" + 7,
-            DateTime.UtcNow, false);
-            ActiveFlights.TryAdd(fll.Flight_Id, fll);
 
             Location locc = new Location(20.704581, 25.583124, DateTime.UtcNow);
 

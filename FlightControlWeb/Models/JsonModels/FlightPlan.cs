@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using FlightControlWeb.Models.Utils;
 using Newtonsoft.Json;
 namespace FlightControlWeb.Models.JsonModels
 {
@@ -10,7 +11,7 @@ namespace FlightControlWeb.Models.JsonModels
         public FlightPlan(string flightId, int passengers, string companyName,
             Location initialLocation, List<Segment> segments)
         {
-            this.Flight_Id = flightId;
+            this.Flight_Id = FlightIdUtil.GenerateFlightId(companyName);
             this.Passengers = passengers;
             this.Company_Name = companyName;
             this.Initial_Location = initialLocation;

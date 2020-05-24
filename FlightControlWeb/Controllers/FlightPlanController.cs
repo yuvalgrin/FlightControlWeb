@@ -21,9 +21,10 @@ namespace FlightControlWeb.Controllers
         }
 
         [HttpPost]
-        public void Post([FromBody] FlightPlan flightPlan)
+        public void Post([FromBody] List<FlightPlan> flightPlans)
         {
-            FlightsManager.Instance.AddFlightPlan(flightPlan);
+            foreach (FlightPlan flightPlan in flightPlans)
+                FlightsManager.Instance.AddFlightPlan(flightPlan);
         }
     }
 }
