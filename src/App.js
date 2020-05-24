@@ -63,11 +63,12 @@ function App() {
     /** Create error component */
     const getError = () => {
         if (isAlertShowing)
-            return (
+            return ( <div className={'alert'}>
                     <Alert key={'alert'} variant={'danger'} isOpen={isAlertShowing} onClose={() => setIsAlertShowing(false)} dismissible>
                     <Alert.Heading><img alt={'alertImg'} src={alertPng}/>Oops</Alert.Heading>
                     {errorAlert}
                     </Alert>
+                </div>
             );
     }
 
