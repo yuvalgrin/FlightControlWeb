@@ -7,7 +7,7 @@ namespace FlightControlWeb.Models.Utils
         {
             Random random = new Random();
             int numId = random.Next(100,999);
-            string flightId = companyName + numId;
+            string flightId = companyName.Substring(0,3) + numId;
             return flightId;
         }
     }
