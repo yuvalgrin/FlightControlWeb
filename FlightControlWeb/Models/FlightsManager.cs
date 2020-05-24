@@ -70,6 +70,7 @@ namespace FlightControlWeb.Models
             return flightPlan.Initial_Location.Date_Time.AddSeconds(seconds);
         }
 
+        /*  */
         private Flight GetFlightFromPlan(FlightPlan flightPlan, DateTime dateTime)
         {
             Location currentLocation =

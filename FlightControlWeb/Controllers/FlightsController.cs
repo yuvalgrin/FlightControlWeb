@@ -23,7 +23,7 @@ namespace FlightControlWeb.Controllers
         [HttpDelete("{id}")]
         public void Delete(string id)
         {
-            FlightsManager.Instance.DeleteFlight(id);
+            FlightsManager.Instance.DeleteFlightPlan(id);
         }
 
     }
