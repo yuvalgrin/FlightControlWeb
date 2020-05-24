@@ -45,7 +45,6 @@ html {
     top: 0;
     right: 0;
     left: 0;
-    max-width: 50vh;
     margin:auto;
     transition: width 2s ease;
 }

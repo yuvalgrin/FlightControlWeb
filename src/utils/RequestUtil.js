@@ -44,7 +44,7 @@ export const postReq = async (url, data, errorCallback) =>  {
             'Accept': 'application/json',
             'Content-Type': 'application/json'
         },
-        body: JSON.stringify(data)
+        body: data
         })
         handleErrors(resp);
     } catch (errorMessage) {

@@ -18,6 +18,15 @@
     color: white;
 }
 
+
+.no-flights {
+    border: none;
+    font-family: sans-serif;
+    color: white;
+    font-weight: bold;
+    font-stretch: extra-expanded;
+}
+
 .link-button {
     float: right;
     background: none!important;

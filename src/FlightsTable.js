@@ -69,11 +69,11 @@ const FlightsTable = ({
             reader.onerror = () => setErrorAlert('file reading has failed')
             reader.onload = () => {
                 // Send file content to server side as a post request
-                const binaryStr = reader.result
+                const binaryStr = reader.result;
                 postReq(url, binaryStr, setErrorAlert);
                 console.log(binaryStr)
             }
-            reader.readAsArrayBuffer(file)
+            reader.readAsText(file, 'UTF-8')
         })
         onDragLeave();
     }, [])
@@ -94,6 +94,19 @@ const FlightsTable = ({
         )
     }
 
+    /** Generates the img and animation for drag-and-drop */
+    const createEmptyRow = () => {
+        if (flightsList.length === 0)
+            return (
+                <tr key={'emptyRow'}>
+                    <td className={'no-flights'}>
+                        No flights available
+                    </td>
+                </tr>
+            )
+        return '';
+    }
+
     /** Generate the table component
      * First local flights,
      * Afterwards the remote servers flights */
@@ -101,6 +114,7 @@ const FlightsTable = ({
         return (
             <Table className={isDragOver?'dropzone-disabled':''}>
                 <tbody>
+                {createEmptyRow()}
                 {getLocalFlights()}
                 {getServersFlights()}
                 </tbody>

@@ -52,8 +52,7 @@ export class FlightMap extends React.Component  {
 
     render() {
         return (
-            <Map google={this.props.google} style={'map-container'}
-                 containerStyle={'map-container'} zoom={4} center={this.getCenter()}>
+            <Map google={this.props.google} zoom={4} center={this.getCenter()}>
                 {this.createMarkers()}
                 {this.createPolylines()}
             </Map>

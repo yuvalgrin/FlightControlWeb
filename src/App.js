@@ -8,32 +8,34 @@ import FlightDetails from "./FlightDetails";
 import {getAndUpdate} from './utils/RequestUtil';
 import alertPng from './resources/alert.png';
 import { Container, Alert } from 'react-bootstrap';
-import Fade from "react-bootstrap/Fade";
-import Collapse from "react-bootstrap/Collapse";
-
 
 const urlPrefix = "https://localhost:5001/api/";
 const flightsApi = "flights?relative_to=";
 const flightPlanApi = "flightplan/";
-
+let errorAlert;
 
 function App() {
     const [flightsList, setFlightList] = useState([]);
     const [flightClicked, setFlightClicked] = useState([]);
     const [flightClickedPlan, setFlightClickedPlan] = useState();
-    const [errorAlert, setErrorAlert] = useState();
+    const [isAlertShowing, setIsAlertShowing] = useState(false);
+
+
     // const [isFlightListLoaded, setIsFlightListLoaded] = useState(false);
 
 
     /** Let each error show for 5 secs */
     const onErrorAlert = (error) => {
-        if (errorAlert != undefined)
+        if (isAlertShowing === true)
             return
 
-        setErrorAlert(error);
-        setTimeout(() => {
-            setErrorAlert(undefined);
-        }, 5000);
+        errorAlert = error;
+        // console.log(errorAlert);
+        setIsAlertShowing(true);
+
+        // setTimeout(() => {
+        //     setIsAlertShowing(false);
+        // }, 10000);
     }
 
     /** On flight click get its flight plan */
@@ -60,12 +62,13 @@ function App() {
 
     /** Create error component */
     const getError = () => {
-        return (
-                <Alert key={'alert'} variant={'danger'}>
-                <Alert.Heading><img alt={'alertImg'} src={alertPng}/>Oops</Alert.Heading>
-                {errorAlert}
-                </Alert>
-        );
+        if (isAlertShowing)
+            return (
+                    <Alert key={'alert'} variant={'danger'} isOpen={isAlertShowing} onClose={() => setIsAlertShowing(false)} dismissible>
+                    <Alert.Heading><img alt={'alertImg'} src={alertPng}/>Oops</Alert.Heading>
+                    {errorAlert}
+                    </Alert>
+            );
     }
 
     /** On application load to screen */
@@ -76,7 +79,7 @@ function App() {
 
     return (
         <div className={'body'}>
-            {errorAlert?getError():''}
+            {getError()}
             <Container className={'grid-container'}>
             <div className={'header'}>
                 <h1>Flight Simulator Web</h1>
