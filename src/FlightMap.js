@@ -19,10 +19,10 @@ export class FlightMap extends React.Component  {
         if (this.props.flightClicked && this.props.flightClicked.flight_id === flight.flight_id)
             isClicked = true;
         return <Marker key={flight.flight_id} onClick={() => this.props.setFlightClick(flight)}
-                        position = {{lat: flight.latitude, lng: flight.longitude}}
+                        position = {{lng: flight.longitude, lat: flight.latitude}}
                         icon={{
                             url: isClicked ? markedPlanePng : planePng,
-                            position: {lat: flight.latitude, lng: flight.longitude},
+                            position: {lng: flight.longitude, lat: flight.latitude},
                              }}
                         name={flight.flight_id} />;
     };
@@ -39,20 +39,23 @@ export class FlightMap extends React.Component  {
                 strokeWeight={4} />)}
 
 
-    getLines = (flightPlan) => Object.values(flightPlan.segments).map(value => ({lat: value.latitude, lng: value.longitude}))
+    getLines = (flightPlan) => [this.getInitialLocation()].concat(Object.values(flightPlan.segments).map(value =>
+        ({lng: value.longitude, lat: value.latitude})))
+
+    getInitialLocation = () => ({lng: this.props.flightClickedPlan.initial_location.longitude,
+        lat: this.props.flightClickedPlan.initial_location.latitude})
 
     /** Center into clicked flight else to default location */
     getCenter = () => {
-        if (this.props.flightClicked.length !== 0)
+        if (this.props.flightClicked && this.props.flightClicked.length !== 0)
             return {lat: this.props.flightClicked.latitude, lng: this.props.flightClicked.longitude}
         else
             return {lat: defaultLat, lng: defaultLon};
     }
 
-
     render() {
         return (
-            <Map google={this.props.google} zoom={4} center={this.getCenter()}>
+            <Map google={this.props.google} zoom={4} center={this.getCenter()} onClick={() => this.props.onFlightDeselect()}>
                 {this.createMarkers()}
                 {this.createPolylines()}
             </Map>

@@ -38,6 +38,13 @@ function App() {
         // }, 10000);
     }
 
+
+    /** On flight click get its flight plan */
+    const onFlightDeselect = () => {
+        setFlightClicked([]);
+        setFlightClickedPlan(undefined);
+    }
+
     /** On flight click get its flight plan */
     const onFlightClick = (flight) => {
         setFlightClicked(flight);
@@ -87,7 +94,7 @@ function App() {
             </div>
             <div className={'map'}>
                 <FlightMap flightsList={flightsList} flightClicked={flightClicked} setFlightClick={onFlightClick}
-                           flightClickedPlan={flightClickedPlan}/>
+                           flightClickedPlan={flightClickedPlan} onFlightDeselect={onFlightDeselect}/>
             </div>
             <div className={'details'}>
                 <FlightDetails flightClicked={flightClicked}/>
