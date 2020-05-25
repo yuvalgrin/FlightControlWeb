@@ -5,7 +5,6 @@ namespace FlightControlWeb.Models.Algo
 {
     public static class LocationInterpolator
     {
-
         public static Location GetLocation(FlightPlan flightPlan, DateTime dateTime)
         {
             TimeSpan timeSpan = dateTime - flightPlan.Initial_Location.Date_Time;
@@ -18,20 +17,21 @@ namespace FlightControlWeb.Models.Algo
                 seconds += segment.Timespan_Seconds;
                 if (seconds >= airtimeSeconds)
                 {
+                    seconds -= segment.Timespan_Seconds;
                     currentSeg = segment;
                     break;
                 }
                 lastSeg = segment;
             }
 
-            long secInSegment = currentSeg.Timespan_Seconds - (airtimeSeconds - seconds);
-            double fraction = secInSegment / currentSeg.Timespan_Seconds;
+            float secInSegment = Math.Abs(airtimeSeconds - seconds);
+            double fraction = secInSegment / (float) currentSeg.Timespan_Seconds;
 
             Location fromLocation = flightPlan.Initial_Location;
             if (lastSeg != null)
             {
                 fromLocation = new Location(lastSeg.Latitude, lastSeg.Longitude,
-                    new DateTime());
+                     DateTime.UtcNow);
             }
 
             double distMeters = calcDistance(fromLocation.Latitude, fromLocation.Longitude,
@@ -45,21 +45,19 @@ namespace FlightControlWeb.Models.Algo
 
         private static double calcDistance(double lat1, double lon1, double lat2, double lon2)
         {
-            long R = 6371*1000; // metres
-            double latitude1 = lat1 * Math.PI / 180; // φ, λ in radians
-            double latitude2 = lat2 * Math.PI / 180;
-            double latitude = (lat2 - lat1) * Math.PI / 180;
-            double longtitude = (lon2 - lon1) * Math.PI / 180;
+            double deg2radMultiplier = Math.PI / 180;
+            lat1 = lat1 * deg2radMultiplier;
+            lon1 = lon1 * deg2radMultiplier;
+            lat2 = lat2 * deg2radMultiplier;
+            lon2 = lon2 * deg2radMultiplier;
 
-            double a = Math.Sin(latitude / 2) * Math.Sin(latitude / 2) +
-                      Math.Cos(latitude1) * Math.Cos(latitude2) *
-                      Math.Sin(longtitude / 2) * Math.Sin(longtitude / 2);
-            double c = 2 * Math.Atan2(Math.Sqrt(a), Math.Sqrt(1 - a));
+            double radius = 6378.137; // earth mean radius defined by WGS84
+            double dlon = lon2 - lon1;
+            double distance = Math.Acos(Math.Sin(lat1) * Math.Sin(lat2) + Math.Cos(lat1) * Math.Cos(lat2) * Math.Cos(dlon)) * radius;
 
-            double d = R * c; // in metres
-
-            return d;
+            return (distance);
         }
+
 
         private static Location getIntermeditaPoint(double d, double f,
             double lat1, double lon1, double lat2, double lon2)
