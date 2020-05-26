@@ -38,7 +38,10 @@ namespace FlightControlWeb.Models
             foreach (Server server in ActiveServers.Values)
             {
                 string url = server.ServerUrl + "/api/Flights?relative_to=" + dateTime.ToString();
-                List<Flight> flights = HttpGetFlights(url).Result;
+                Task<List<Flight>> httpRes = HttpGetFlights(url);
+                if (httpRes == null)
+                    continue;
+                List<Flight> flights = httpRes.Result;
                 totalFlights.AddRange(flights);
             }
 
