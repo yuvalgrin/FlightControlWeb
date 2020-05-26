@@ -19,7 +19,7 @@ function App() {
     const [flightClicked, setFlightClicked] = useState([]);
     const [flightClickedPlan, setFlightClickedPlan] = useState();
     const [isAlertShowing, setIsAlertShowing] = useState(false);
-
+    const [shouldCenterMap, setShouldCenterMap] = useState(true);
 
     // const [isFlightListLoaded, setIsFlightListLoaded] = useState(false);
 
@@ -49,6 +49,20 @@ function App() {
     const onFlightClick = (flight) => {
         setFlightClicked(flight);
         getFlightPlan(flight.flight_id);
+        setShouldCenterMap(true);
+    }
+
+    /** Update the flight list with UTC time */
+    const isFlightOnList = () =>  {
+        if (flightClicked === [] || flightClickedPlan === undefined)
+            return;
+        let isFlightOnList = false;
+        Object.values(flightsList).map(value =>
+            {if (flightClicked && flightClicked.flight_id == value.flight_id)
+                isFlightOnList = true;})
+
+        if (!isFlightOnList)
+            onFlightDeselect();
     }
 
     /** Update the flight list with UTC time */
@@ -87,6 +101,7 @@ function App() {
 
     return (
         <div className={'body'}>
+            {isFlightOnList()}
             {getError()}
             <Container className={'grid-container'}>
             <div className={'header'}>
@@ -94,7 +109,8 @@ function App() {
             </div>
             <div className={'map'}>
                 <FlightMap flightsList={flightsList} flightClicked={flightClicked} setFlightClick={onFlightClick}
-                           flightClickedPlan={flightClickedPlan} onFlightDeselect={onFlightDeselect}/>
+                           flightClickedPlan={flightClickedPlan} onFlightDeselect={onFlightDeselect}
+                           shouldCenterMap={shouldCenterMap} setShouldCenterMap={setShouldCenterMap}/>
             </div>
             <div className={'details'}>
                 <FlightDetails flightClicked={flightClicked}/>

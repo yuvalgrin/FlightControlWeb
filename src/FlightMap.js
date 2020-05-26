@@ -8,7 +8,6 @@ const apiKey = 'AIzaSyAjngpsKv9PcK9NqXrHi8VdNi_5VI287CM';
 const defaultLat = '33.790755';
 const defaultLon = '37.203170';
 
-
 export class FlightMap extends React.Component  {
     /** This method will iterate all of the flight plans and print them into the Map object */
     createMarkers = () => Object.values(this.props.flightsList).map(value => this.getMarker(value))
@@ -29,7 +28,7 @@ export class FlightMap extends React.Component  {
 
     /** Get the polylines from flight segments */
     createPolylines = () => {
-        if (this.props.flightClickedPlan === undefined)
+        if (this.props.flightClicked === [] || this.props.flightClickedPlan === undefined)
             return [];
         return (
             <Polyline
@@ -53,12 +52,40 @@ export class FlightMap extends React.Component  {
             return {lat: defaultLat, lng: defaultLon};
     }
 
+    /** Center map only on init */
+    componentDidMount() {
+        this.props.setShouldCenterMap(true);
+    }
+
+    /** Create map and center it */
+    getMapWithCenter = () => (
+        <Map google={this.props.google} zoom={4} center={this.getCenter()} onClick={() => this.props.onFlightDeselect()}>
+            {this.createMarkers()}
+            {this.createPolylines()}
+        </Map>
+    )
+
+    /** Create map without centering it */
+    getMapWithoutCenter = () => (
+        <Map google={this.props.google} zoom={4} onClick={() => this.props.onFlightDeselect()}>
+            {this.createMarkers()}
+            {this.createPolylines()}
+        </Map>
+    )
+
+    /** Create map and center only at first */
+    getMap = () => {
+        if (this.props.shouldCenterMap) {
+            this.props.setShouldCenterMap(false);
+            return this.getMapWithCenter();
+        }
+        return this.getMapWithoutCenter();
+    }
+
+
     render() {
         return (
-            <Map google={this.props.google} zoom={4} center={this.getCenter()} onClick={() => this.props.onFlightDeselect()}>
-                {this.createMarkers()}
-                {this.createPolylines()}
-            </Map>
+            this.getMap()
         );
     }
 }

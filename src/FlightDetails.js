@@ -5,6 +5,7 @@ const FlightDetails = ({flightClicked}) => {
 
     //Create the detail rows
     const createRows = () => Object.entries(flightClicked).map(([key, value]) => getRow(key, value))
+
     const getRow = (key, value) => {
         return (
             <tr key={key}>
