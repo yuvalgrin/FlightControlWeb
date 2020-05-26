@@ -67,7 +67,8 @@ namespace FlightControlWeb.Models
                 seconds += segment.Timespan_Seconds;
             }
 
-            return flightPlan.Initial_Location.Date_Time.AddSeconds(seconds);
+            DateTime initialDatetime = flightPlan.Initial_Location.Date_Time;
+            return initialDatetime.AddSeconds(seconds);
         }
 
         /* Create a flight object from the flight plan
