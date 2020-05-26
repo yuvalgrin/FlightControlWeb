@@ -76,7 +76,7 @@ namespace FlightControlWeb.Models
         }
 
         /** Delete a selected server */
-        public void DeleteServer(string id)
+        public bool DeleteServer(string id)
         {
             return ActiveServers.TryRemove(id, out _);
         }
