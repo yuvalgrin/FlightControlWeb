@@ -20,9 +20,8 @@ namespace FlightControlWeb.Controllers
         }
 
         [HttpPost]
-        public void Post([FromBody] List<Server> servers)
+        public void Post([FromBody] Server server)
         {
-            foreach (Server server in servers)
             RemoteServersConnector.Instance.AddServer(server);
         }
 

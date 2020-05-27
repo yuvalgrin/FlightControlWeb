@@ -16,15 +16,17 @@ namespace FlightControlWeb.Controllers
         [HttpGet("{id}")]
         public string Get(string id)
         {
-            FlightPlan flights = FlightsManager.Instance.GetFlightPlan(id);
-            return JsonConvert.SerializeObject(flights, Formatting.Indented);
+            FlightPlan flightPlan = FlightsManager.Instance.GetFlightPlan(id);
+            if (flightPlan == FlightPlan.NULL)
+                return "{\"Error\":\"Flight plan does not exist\"}";
+
+            return JsonConvert.SerializeObject(flightPlan, Formatting.Indented);
         }
 
         [HttpPost]
-        public void Post([FromBody] List<FlightPlan> flightPlans)
+        public void Post([FromBody] FlightPlan flightPlan)
         {
-            foreach (FlightPlan flightPlan in flightPlans)
-                FlightsManager.Instance.AddFlightPlan(flightPlan);
+            FlightsManager.Instance.AddFlightPlan(flightPlan);
         }
     }
 }

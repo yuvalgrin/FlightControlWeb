@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Net.Http;
 using System.Threading.Tasks;
 using FlightControlWeb.Models.JsonModels;
+using FlightControlWeb.Models.Utils;
 using Newtonsoft.Json;
 
 namespace FlightControlWeb.Models
@@ -22,45 +23,80 @@ namespace FlightControlWeb.Models
         }
 
         public ConcurrentDictionary<string, Server> ActiveServers { get; set; }
+        public ConcurrentDictionary<string, Server> RemoteFlightIdToServer { get; set; }
+        public ConcurrentDictionary<string, FlightPlan> RemoteFlightIdToPlan { get; set; }
+
 
         public RemoteServersConnector()
         {
             ActiveServers = new ConcurrentDictionary<string, Server>();
+            RemoteFlightIdToServer = new ConcurrentDictionary<string, Server>();
+            RemoteFlightIdToPlan = new ConcurrentDictionary<string, FlightPlan>();
         }
 
         /**
-         * syncAll gets the flights from remote servers as well.
-         */
+        * syncAll gets the flights from remote servers as well.
+        */
+        public FlightPlan GetRemoteFlightPlan(string flightId)
+        {
+            FlightPlan flightPlan;
+            RemoteFlightIdToPlan.TryGetValue(flightId, out flightPlan);
+            if (flightPlan != null)
+                return flightPlan;
+
+            RemoteFlightIdToServer.TryGetValue(flightId, out Server server);
+            string url = server.ServerUrl + "/api/FlightPlan/" + flightId;
+            try
+            {
+                Task<string> queryResult = ExecuteAsyncGet(url);
+                flightPlan = JsonConvert.DeserializeObject<FlightPlan>(queryResult.Result);
+                RemoteFlightIdToPlan.TryAdd(flightId, flightPlan);
+                return flightPlan;
+            }
+            catch (Exception)
+            {
+                return FlightPlan.NULL;
+            }
+
+        }
+
+        /**
+        * syncAll gets the flights from remote servers as well.
+        */
         public List<Flight> GetRelativeFlights(DateTime dateTime)
         {
             List<Flight> totalFlights = new List<Flight>();
             // Aggregate all remote flights
             foreach (Server server in ActiveServers.Values)
             {
-                string url = server.ServerUrl + "/api/Flights?relative_to=" + dateTime.ToString();
-                Task<List<Flight>> httpRes = HttpGetFlights(url);
-                if (httpRes == null)
+                string url = server.ServerUrl + "/api/Flights?relative_to=" + DateUtil.formatDate(dateTime);
+                Task<string> queryResult = ExecuteAsyncGet(url);
+                try
+                {
+                    List<Flight> flights = JsonConvert.DeserializeObject<List<Flight>>(queryResult.Result);
+                    foreach (Flight remoteFlight in flights)
+                    {
+                        totalFlights.Add(remoteFlight);
+                        RemoteFlightIdToServer.TryAdd(remoteFlight.Flight_Id, server);
+                    }
+                } catch (Exception)
+                {
                     continue;
-                List<Flight> flights = httpRes.Result;
-                totalFlights.AddRange(flights);
+                }
             }
 
             return totalFlights;
         }
 
-        /** Get flight from another server with http get */
-        private async Task<List<Flight>> HttpGetFlights(string url)
+        /** Get http async request */
+        public static async Task<string> ExecuteAsyncGet(string url)
         {
-            List<Flight> flights = null;
             using (var client = new HttpClient())
             {
-                client.Timeout = TimeSpan.FromSeconds(2);
-                var response = await client.GetAsync(url);
-                var data = response.Content.ReadAsStringAsync().Result;
-                flights = JsonConvert.DeserializeObject<List<Flight>>(data);
+                HttpResponseMessage response = client.GetAsync(url).Result;
+                response.EnsureSuccessStatusCode();
+                return await response.Content.ReadAsStringAsync();
             }
-
-            return flights;
         }
 
         /** Adds a new server */

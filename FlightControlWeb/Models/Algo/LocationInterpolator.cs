@@ -1,5 +1,6 @@
 ﻿using System;
 using FlightControlWeb.Models.JsonModels;
+using FlightControlWeb.Models.Utils;
 
 namespace FlightControlWeb.Models.Algo
 {
@@ -7,25 +8,24 @@ namespace FlightControlWeb.Models.Algo
     {
         public static Location GetLocation(FlightPlan flightPlan, DateTime dateTime)
         {
-            TimeSpan timespan = dateTime - flightPlan.Initial_Location.Date_Time;
-            long airtimeSeconds = (long) timespan.TotalSeconds;
-            long secondsOnSegmentsSoFar = 0;
+            long airtimeSeconds = DateUtil.CalcDiffInSec(dateTime, flightPlan.Initial_Location.Date_Time);
+            long secInSegmentsSoFar = 0;
             Segment currentSeg = null, lastSeg = null;
 
             foreach (Segment segment in flightPlan.Segments)
             {
-                secondsOnSegmentsSoFar += segment.Timespan_Seconds;
-                if (secondsOnSegmentsSoFar >= airtimeSeconds)
+                secInSegmentsSoFar += segment.Timespan_Seconds;
+                if (secInSegmentsSoFar >= airtimeSeconds)
                 {
                     currentSeg = segment;
-                    secondsOnSegmentsSoFar -= segment.Timespan_Seconds;
+                    secInSegmentsSoFar -= segment.Timespan_Seconds;
                     break;
                 }
                 lastSeg = segment;
             }
 
-            float secInSegment = Math.Abs(airtimeSeconds - secondsOnSegmentsSoFar);
-            double fraction = secInSegment / currentSeg.Timespan_Seconds;
+            float secInCurrentSegment = Math.Abs(airtimeSeconds - secInSegmentsSoFar);
+            double fraction = secInCurrentSegment / currentSeg.Timespan_Seconds;
 
             Location fromLocation = flightPlan.Initial_Location;
             if (lastSeg != null)

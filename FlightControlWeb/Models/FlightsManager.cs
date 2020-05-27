@@ -108,7 +108,8 @@ namespace FlightControlWeb.Models
 
             if (exists)
                 return flightPlan;
-            return null;
+
+            return RemoteServersConnector.Instance.GetRemoteFlightPlan(flightId);
         }
 
         /**
@@ -124,17 +125,17 @@ namespace FlightControlWeb.Models
         public void InitDummies()
         {
             //// Dummy flight!!!
-            for (int i = 1; i < 5; i++)
+            for (int i = 1; i < 2; i++)
             {
                 int num = 750 + i;
                 string id = "EL" + num;
 
                 Location loc = new Location(32.704581, 35.583124, DateTime.UtcNow);
                 List<Segment> ls = new List<Segment>();
-                ls.Add(new Segment(32.704581 + i * 2, 35.583124 + i * 2, 20));
-                ls.Add(new Segment(33.804581 + i * 2, 35.683124 + i * 2, 30));
-                ls.Add(new Segment(32.904581 + i * 2, 36.783124 + i * 2, 40));
-                ls.Add(new Segment(20.904581 + i * 2, 21.783124 + i * 2, 40));
+                ls.Add(new Segment(32.704581 + i * 2, 35.583124 + i * 1, 20));
+                ls.Add(new Segment(33.804581 + i * 3, 35.683124 + i * 2, 30));
+                ls.Add(new Segment(32.904581 + i * 2, 36.783124 + i * 3, 40));
+                ls.Add(new Segment(20.904581 + i * 1, 21.783124 + i * 2, 40));
                 FlightPlan flpln = new FlightPlan(id, i, "Company_" + i, loc, ls);
                 ActiveFlightPlans.TryAdd(flpln.Flight_Id, flpln);
             }
@@ -151,6 +152,5 @@ namespace FlightControlWeb.Models
             FlightPlan flplnn = new FlightPlan(idd, 8, "Company_" + 7, locc, lss);
             ActiveFlightPlans.TryAdd(flplnn.Flight_Id, flplnn);
         }
-
     }
 }

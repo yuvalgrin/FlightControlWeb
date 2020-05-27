@@ -6,6 +6,8 @@ namespace FlightControlWeb.Models.JsonModels
 {
     public class FlightPlan
     {
+        public static FlightPlan NULL = new FlightPlan();
+
         public FlightPlan() {}
 
         public FlightPlan(string flightId, int passengers, string companyName,
