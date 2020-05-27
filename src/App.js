@@ -1,5 +1,4 @@
 import React, {useEffect, useState} from 'react';
-import { format } from 'date-fns'
 import './App.css';
 import './bootstrap.min.css';
 import FlightMap from "./FlightMap";
@@ -11,7 +10,7 @@ import { Container, Alert } from 'react-bootstrap';
 
 const urlPrefix = "https://localhost:5001/api/";
 const flightsApi = "flights?relative_to=";
-const flightPlanApi = "flightplan/";
+const flightPlanApi = "FlightPlan/";
 let errorAlert;
 
 function App() {
@@ -28,14 +27,8 @@ function App() {
     const onErrorAlert = (error) => {
         if (isAlertShowing === true)
             return
-
         errorAlert = error;
-        // console.log(errorAlert);
         setIsAlertShowing(true);
-
-        // setTimeout(() => {
-        //     setIsAlertShowing(false);
-        // }, 10000);
     }
 
 
@@ -58,7 +51,7 @@ function App() {
             return;
         let isFlightOnList = false;
         Object.values(flightsList).map(value =>
-            {if (flightClicked && flightClicked.flight_id == value.flight_id)
+            {if (flightClicked && flightClicked.flight_id === value.flight_id)
                 isFlightOnList = true;})
 
         if (!isFlightOnList)
@@ -67,16 +60,18 @@ function App() {
 
     /** Update the flight list with UTC time */
     const getFlightList = () =>  {
-        let now = new Date();
-        let utc = new Date(now.getTime() + now.getTimezoneOffset() * 60000);
-        let dateUtc = format(utc, 'yyyy-MM-dd HH:mm:ss');
-        let url = urlPrefix + flightsApi + dateUtc;
+        const now = new Date();
+        const utc = new Date(now.getTime() + now.getTimezoneOffset() * 60000);
+        const dateUtc = utc.toISOString().split('.')[0]+"Z";
+        const syncAll = "&sync_all";
+        const url = urlPrefix + flightsApi + dateUtc + syncAll;
         getAndUpdate(url, setFlightList, undefined, onErrorAlert);
     }
 
     /** Request the flight plan */
     const getFlightPlan = (id) => {
         let url = urlPrefix + flightPlanApi + id;
+        console.log(url);
         getAndUpdate(url, setFlightClickedPlan, undefined, onErrorAlert);
     }
 
