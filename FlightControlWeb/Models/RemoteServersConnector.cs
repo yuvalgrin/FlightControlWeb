@@ -9,19 +9,8 @@ using Newtonsoft.Json;
 
 namespace FlightControlWeb.Models
 {
-    public class RemoteServersConnector
+    public class RemoteServersConnector : IRemoteServersConnector
     {
-        private static RemoteServersConnector _instance;
-        public static RemoteServersConnector Instance
-        {
-            get
-            {
-                if (_instance == null)
-                    _instance = new RemoteServersConnector();
-                return _instance;
-            }
-        }
-
         public ConcurrentDictionary<string, Server> ActiveServers { get; set; }
         public ConcurrentDictionary<string, Server> RemoteFlightIdToServer { get; set; }
         public ConcurrentDictionary<string, FlightPlan> RemoteFlightIdToPlan { get; set; }
@@ -81,7 +70,8 @@ namespace FlightControlWeb.Models
                         totalFlights.Add(remoteFlight);
                         RemoteFlightIdToServer.TryAdd(remoteFlight.Flight_Id, server);
                     }
-                } catch (Exception)
+                }
+                catch (Exception)
                 {
                     continue;
                 }

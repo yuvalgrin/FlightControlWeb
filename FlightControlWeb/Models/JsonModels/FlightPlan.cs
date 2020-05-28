@@ -10,7 +10,7 @@ namespace FlightControlWeb.Models.JsonModels
 
         public FlightPlan() {}
 
-        public FlightPlan(string flightId, int passengers, string companyName,
+        public FlightPlan(int passengers, string companyName,
             Location initialLocation, List<Segment> segments)
         {
             this.Flight_Id = FlightIdUtil.GenerateFlightId(companyName);

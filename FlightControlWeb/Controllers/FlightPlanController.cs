@@ -13,19 +13,26 @@ namespace FlightControlWeb.Controllers
     [Route("/api/[controller]")]
     public class FlightPlanController : Controller
     {
-        [HttpGet("{id}")]
-        public IActionResult Get(string id)
+        private IFlightsManager _flightsManager;
+
+        public FlightPlanController(IFlightsManager flightsManager)
         {
-            FlightPlan flightPlan = FlightsManager.Instance.GetFlightPlan(id);
+            this._flightsManager = flightsManager;
+        }
+
+        [HttpGet("{id}")]
+        public IActionResult GetFlightPlan(string id)
+        {
+            FlightPlan flightPlan = _flightsManager.GetFlightPlan(id);
             if (flightPlan == FlightPlan.NULL)
                 return BadRequest(new Error("Flight plan does not exist."));
-            return Ok(JsonConvert.SerializeObject(flightPlan, Formatting.Indented));
+            return new OkObjectResult(JsonConvert.SerializeObject(flightPlan, Formatting.Indented));
         }
 
         [HttpPost]
-        public IActionResult Post([FromBody] FlightPlan flightPlan)
+        public IActionResult AddFlightPlan([FromBody] FlightPlan flightPlan)
         {
-            FlightsManager.Instance.AddFlightPlan(flightPlan);
+            _flightsManager.AddFlightPlan(flightPlan);
             return Ok();
         }
     }

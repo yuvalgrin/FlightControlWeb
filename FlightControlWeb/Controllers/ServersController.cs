@@ -12,25 +12,32 @@ namespace FlightControlWeb.Controllers
     [ApiController]
     public class ServersController : Controller
     {
-        [HttpGet]
-        public IActionResult Get()
+        private IRemoteServersConnector _remoteServersConnector;
+
+        public ServersController(IRemoteServersConnector remoteServersConnector)
         {
-            ICollection<Server> servers = RemoteServersConnector.Instance.GetAllServers();
-            return Ok(JsonConvert.SerializeObject(servers, Formatting.Indented));
+            this._remoteServersConnector = remoteServersConnector;
+        }
+
+        [HttpGet]
+        public IActionResult GetServers()
+        {
+            ICollection<Server> servers = _remoteServersConnector.GetAllServers();
+            return new OkObjectResult(JsonConvert.SerializeObject(servers, Formatting.Indented));
         }
 
         [HttpPost]
-        public IActionResult Post([FromBody] Server server)
+        public IActionResult AddServer([FromBody] Server server)
         {
-            if(RemoteServersConnector.Instance.AddServer(server))
+            if(_remoteServersConnector.AddServer(server))
                 return Ok();
             return BadRequest(new Error("Could not add server."));
         }
 
         [HttpDelete("{id}")]
-        public IActionResult Delete(string id)
+        public IActionResult DeleteServer(string id)
         {
-            if(RemoteServersConnector.Instance.DeleteServer(id))
+            if(_remoteServersConnector.DeleteServer(id))
                 return Ok();
             return BadRequest(new Error("Could not delete server."));
         }
