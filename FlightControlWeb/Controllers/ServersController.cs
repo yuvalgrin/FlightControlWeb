@@ -13,22 +13,26 @@ namespace FlightControlWeb.Controllers
     public class ServersController : Controller
     {
         [HttpGet]
-        public string Get()
+        public IActionResult Get()
         {
             ICollection<Server> servers = RemoteServersConnector.Instance.GetAllServers();
-            return JsonConvert.SerializeObject(servers, Formatting.Indented);
+            return Ok(JsonConvert.SerializeObject(servers, Formatting.Indented));
         }
 
         [HttpPost]
-        public void Post([FromBody] Server server)
+        public IActionResult Post([FromBody] Server server)
         {
-            RemoteServersConnector.Instance.AddServer(server);
+            if(RemoteServersConnector.Instance.AddServer(server))
+                return Ok();
+            return BadRequest(new Error("Could not add server."));
         }
 
         [HttpDelete("{id}")]
-        public void Delete(string id)
+        public IActionResult Delete(string id)
         {
-            RemoteServersConnector.Instance.DeleteServer(id);
+            if(RemoteServersConnector.Instance.DeleteServer(id))
+                return Ok();
+            return BadRequest(new Error("Could not delete server."));
         }
     }
 }

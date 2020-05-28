@@ -45,9 +45,11 @@ namespace FlightControlWeb.Models
                 return flightPlan;
 
             RemoteFlightIdToServer.TryGetValue(flightId, out Server server);
-            string url = server.ServerUrl + "/api/FlightPlan/" + flightId;
+            if (server == null)
+                return FlightPlan.NULL;
             try
             {
+                string url = server.ServerUrl + "/api/FlightPlan/" + flightId;
                 Task<string> queryResult = ExecuteAsyncGet(url);
                 flightPlan = JsonConvert.DeserializeObject<FlightPlan>(queryResult.Result);
                 RemoteFlightIdToPlan.TryAdd(flightId, flightPlan);
@@ -100,9 +102,9 @@ namespace FlightControlWeb.Models
         }
 
         /** Adds a new server */
-        public void AddServer(Server server)
+        public bool AddServer(Server server)
         {
-            ActiveServers.TryAdd(server.ServerId, server);
+            return ActiveServers.TryAdd(server.ServerId, server);
         }
 
         /** Gets the entire active servers */

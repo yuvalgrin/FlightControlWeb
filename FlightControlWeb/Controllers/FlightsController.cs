@@ -14,17 +14,19 @@ namespace FlightControlWeb.Controllers
     public class FlightsController : Controller
     {
         [HttpGet]
-        public string Get([FromQuery] DateTime relative_to)
+        public IActionResult Get([FromQuery] DateTime relative_to)
         {
             bool syncAll = Request.Query.ContainsKey("sync_all");
             List<Flight> flights = FlightsManager.Instance.GetRelativeFlights(relative_to, syncAll);
-            return JsonConvert.SerializeObject(flights, Formatting.Indented);
+            return Ok(JsonConvert.SerializeObject(flights, Formatting.Indented));
         }
 
         [HttpDelete("{id}")]
-        public void Delete(string id)
+        public IActionResult Delete(string id)
         {
-            FlightsManager.Instance.DeleteFlightPlan(id);
+            if (FlightsManager.Instance.DeleteFlightPlan(id))
+                return Ok();
+            return BadRequest(new Error("Could not delete flight."));
         }
 
     }
