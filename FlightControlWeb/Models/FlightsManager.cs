@@ -8,14 +8,14 @@ namespace FlightControlWeb.Models
 {
     public class FlightsManager : IFlightsManager
     {
-        public ConcurrentDictionary<string, FlightPlan> ActiveFlightPlans { get; set; }
+        private ConcurrentDictionary<string, FlightPlan> ActiveFlightPlans { get; set; }
         private IRemoteServersConnector _remoteServersConnector;
 
         public FlightsManager(IRemoteServersConnector remoteServersConnector)
         {
             this._remoteServersConnector = remoteServersConnector;
             ActiveFlightPlans = new ConcurrentDictionary<string, FlightPlan>();
-            //InitDummies();
+            InitDummies();
         }
 
         /**
@@ -73,8 +73,8 @@ namespace FlightControlWeb.Models
             int passengers = flightPlan.Passengers;
             string companyName = flightPlan.Company_Name;
 
-            Flight flight = new Flight(flightId, longitude, latitude, passengers,
-                companyName, dateTime, false);
+            Flight flight = new Flight(flightId, longitude, latitude,
+                passengers, companyName, dateTime, false);
 
             return flight;
         }
@@ -94,9 +94,7 @@ namespace FlightControlWeb.Models
         public FlightPlan GetFlightPlan(string flightId)
         {
             FlightPlan flightPlan;
-            bool exists = ActiveFlightPlans.TryGetValue(flightId, out flightPlan);
-
-            if (exists)
+            if (ActiveFlightPlans.TryGetValue(flightId, out flightPlan))
                 return flightPlan;
 
             return _remoteServersConnector.GetRemoteFlightPlan(flightId);
@@ -105,9 +103,9 @@ namespace FlightControlWeb.Models
         /**
         * Get a flight plan by id.
         */
-        public void AddFlightPlan(FlightPlan flightPlan)
+        public bool AddFlightPlan(FlightPlan flightPlan)
         {
-            ActiveFlightPlans.TryAdd(flightPlan.Flight_Id, flightPlan);
+            return ActiveFlightPlans.TryAdd(flightPlan.Flight_Id, flightPlan);
         }
 
 
@@ -131,8 +129,8 @@ namespace FlightControlWeb.Models
             Location locc = new Location(38.112375, 23.879437, DateTime.UtcNow);
 
             List<Segment> lss = new List<Segment>();
-            lss.Add(new Segment(31.922629, 31.522594, 35)); // egypt
-            lss.Add(new Segment(32.426506, 34.743033, 65)); // cyprus
+            lss.Add(new Segment(31.922629, 31.522594, 535)); // egypt
+            lss.Add(new Segment(32.426506, 34.743033, 265)); // cyprus
             lss.Add(new Segment(26.209199, 35.055211, 305)); // greece
             FlightPlan flplnn = new FlightPlan(8, "Company_" + 7, locc, lss);
             ActiveFlightPlans.TryAdd(flplnn.Flight_Id, flplnn);

@@ -12,7 +12,7 @@
     "IIS Express": {
       "commandName": "IISExpress",
       "launchBrowser": true,
-      "launchUrl": "/api/flights?relative_to=1994/01/01",
+      "launchUrl": "/api/flights?relative_to=2020-05-28T12:39:46Z",
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development"
       }
@@ -20,7 +20,7 @@
     "FlightControlWeb": {
       "commandName": "Project",
       "launchBrowser": true,
-      "launchUrl": "/api/flights?relative_to=1994/01/01",
+      "launchUrl": "/api/flights?relative_to=2020-05-28T12:39:46Z",
       "applicationUrl": "https://localhost:5001;http://localhost:5000",
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development"

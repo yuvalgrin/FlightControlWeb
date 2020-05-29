@@ -20,6 +20,7 @@ namespace FlightControlWeb.Models.JsonModels
             this.Segments = segments;
         }
 
+        [JsonIgnore]
         [JsonProperty("flight_id")]
         public string Flight_Id { get; set; }
 

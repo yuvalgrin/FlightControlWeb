@@ -32,8 +32,9 @@ namespace FlightControlWeb.Controllers
         [HttpPost]
         public IActionResult AddFlightPlan([FromBody] FlightPlan flightPlan)
         {
-            _flightsManager.AddFlightPlan(flightPlan);
-            return Ok();
+            if (_flightsManager.AddFlightPlan(flightPlan))
+                return Ok();
+            return BadRequest(new Error("Flight plan could not be added."));
         }
     }
 }

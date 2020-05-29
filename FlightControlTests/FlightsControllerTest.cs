@@ -107,20 +107,16 @@ namespace FlightControlTests
             Server server = new Server(serverId, serverUrl);
 
             // Act
-            var stubRemoteServersConnector = new RemoteServersConnector();
-            stubRemoteServersConnector.AddServer(server);
-            var serversController = new ServersController(stubRemoteServersConnector);
+            var mockRemoteServersConnector = new RemoteServersConnector();
+            mockRemoteServersConnector.AddServer(server);
+            var serversController = new ServersController(mockRemoteServersConnector);
 
             IActionResult delAction = serversController.DeleteServer(server.ServerId);
-            IActionResult getAction = serversController.GetServers();
 
 
             // Assert
             Assert.IsType<OkResult>(delAction);
-            OkObjectResult okResultGet = Assert.IsType<OkObjectResult>(getAction);
-            string serversStr = Assert.IsType<string>(okResultGet.Value);
-            var servers = JsonConvert.DeserializeObject(serversStr);
-            Assert.Empty((System.Collections.IEnumerable)servers);
+            Assert.Empty(mockRemoteServersConnector.GetAllServers());
         }
     }
 }

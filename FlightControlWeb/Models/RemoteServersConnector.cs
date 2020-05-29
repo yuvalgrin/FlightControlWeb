@@ -2,6 +2,7 @@
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Net.Http;
+using System.Text;
 using System.Threading.Tasks;
 using FlightControlWeb.Models.JsonModels;
 using FlightControlWeb.Models.Utils;
@@ -11,9 +12,9 @@ namespace FlightControlWeb.Models
 {
     public class RemoteServersConnector : IRemoteServersConnector
     {
-        public ConcurrentDictionary<string, Server> ActiveServers { get; set; }
-        public ConcurrentDictionary<string, Server> RemoteFlightIdToServer { get; set; }
-        public ConcurrentDictionary<string, FlightPlan> RemoteFlightIdToPlan { get; set; }
+        private ConcurrentDictionary<string, Server> ActiveServers { get; set; }
+        private ConcurrentDictionary<string, Server> RemoteFlightIdToServer { get; set; }
+        private ConcurrentDictionary<string, FlightPlan> RemoteFlightIdToPlan { get; set; }
 
 
         public RemoteServersConnector()
@@ -38,9 +39,12 @@ namespace FlightControlWeb.Models
                 return FlightPlan.NULL;
             try
             {
-                string url = server.ServerUrl + "/api/FlightPlan/" + flightId;
-                Task<string> queryResult = ExecuteAsyncGet(url);
-                flightPlan = JsonConvert.DeserializeObject<FlightPlan>(queryResult.Result);
+                StringBuilder url = new StringBuilder(server.ServerUrl);
+                url.Append("/api/FlightPlan/");
+                url.Append(flightId);
+                Task<string> queryResult = ExecuteAsyncGet(url.ToString());
+                flightPlan =
+                    JsonConvert.DeserializeObject<FlightPlan>(queryResult.Result);
                 RemoteFlightIdToPlan.TryAdd(flightId, flightPlan);
                 return flightPlan;
             }
@@ -60,16 +64,12 @@ namespace FlightControlWeb.Models
             // Aggregate all remote flights
             foreach (Server server in ActiveServers.Values)
             {
-                string url = server.ServerUrl + "/api/Flights?relative_to=" + DateUtil.formatDate(dateTime);
-                Task<string> queryResult = ExecuteAsyncGet(url);
+                StringBuilder url = new StringBuilder(server.ServerUrl);
+                url.Append("/api/Flights?relative_to=");
+                url.Append(DateUtil.FormatDate(dateTime));
                 try
                 {
-                    List<Flight> flights = JsonConvert.DeserializeObject<List<Flight>>(queryResult.Result);
-                    foreach (Flight remoteFlight in flights)
-                    {
-                        totalFlights.Add(remoteFlight);
-                        RemoteFlightIdToServer.TryAdd(remoteFlight.Flight_Id, server);
-                    }
+                    QueryAndGetFlights(url.ToString(), server, totalFlights);
                 }
                 catch (Exception)
                 {
@@ -78,6 +78,20 @@ namespace FlightControlWeb.Models
             }
 
             return totalFlights;
+        }
+
+        /* Query remote server and add its flights to total flights */
+        private void QueryAndGetFlights(string url, Server server,
+            List<Flight> totalFlights)
+        {
+            Task<string> queryResult = ExecuteAsyncGet(url);
+            List<Flight> flights =
+                JsonConvert.DeserializeObject<List<Flight>>(queryResult.Result);
+            foreach (Flight remoteFlight in flights)
+            {
+                totalFlights.Add(remoteFlight);
+                RemoteFlightIdToServer.TryAdd(remoteFlight.Flight_Id, server);
+            }
         }
 
         /** Get http async request */

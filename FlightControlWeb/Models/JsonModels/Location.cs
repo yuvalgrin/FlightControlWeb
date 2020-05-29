@@ -1,5 +1,7 @@
 ﻿using System;
 using Newtonsoft.Json;
+using FlightControlWeb.Models.Utils;
+
 namespace FlightControlWeb.Models.JsonModels
 {
     public class Location
@@ -19,6 +21,7 @@ namespace FlightControlWeb.Models.JsonModels
         public double Latitude { get; set; }
 
         [JsonProperty("date_time")]
+        [JsonConverter(typeof(DateFormatConverter), DateUtil.IsoDateFormat)]
         public DateTime Date_Time { get; set; }
     }
 }

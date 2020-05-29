@@ -8,10 +8,12 @@ namespace FlightControlWeb.Models.Algo
     {
         public static Location GetLocation(FlightPlan flightPlan, DateTime dateTime)
         {
-            long airtimeSeconds = DateUtil.CalcDiffInSec(dateTime, flightPlan.Initial_Location.Date_Time);
+            long airtimeSeconds = DateUtil.CalcDiffInSec(dateTime,
+                flightPlan.Initial_Location.Date_Time);
             long secInSegmentsSoFar = 0;
             Segment currentSeg = null, lastSeg = null;
 
+            // Add all segment seconds so far
             foreach (Segment segment in flightPlan.Segments)
             {
                 secInSegmentsSoFar += segment.Timespan_Seconds;
@@ -24,6 +26,7 @@ namespace FlightControlWeb.Models.Algo
                 lastSeg = segment;
             }
 
+            // Get the fraction of segment the plane is in
             float secInCurrentSegment = Math.Abs(airtimeSeconds - secInSegmentsSoFar);
             double fraction = secInCurrentSegment / currentSeg.Timespan_Seconds;
 
@@ -38,10 +41,16 @@ namespace FlightControlWeb.Models.Algo
             return GetIntermediateLocation(fromLocation, toLocation, fraction);
         }
 
+        /* Basic linear interpolation logic */
         public static Location GetIntermediateLocation(Location fromLocation, Location toLocation, double fraction)
         {
-            var lon = fromLocation.Longitude + fraction * (toLocation.Longitude - fromLocation.Longitude);
-            var lat = fromLocation.Latitude + fraction * (toLocation.Latitude - fromLocation.Latitude);
+            double lonDistance = toLocation.Longitude - fromLocation.Longitude;
+            double latDistance = toLocation.Latitude - fromLocation.Latitude;
+
+            double lon = fromLocation.Longitude + fraction * lonDistance;
+            double lat = fromLocation.Latitude + fraction * latDistance;
+            lon = Math.Round(lon, 6);
+            lat = Math.Round(lat, 6);
             return new Location(lon, lat, DateTime.UtcNow);
         }
 

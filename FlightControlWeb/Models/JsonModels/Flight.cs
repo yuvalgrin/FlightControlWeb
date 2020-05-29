@@ -1,4 +1,5 @@
 ﻿using System;
+using FlightControlWeb.Models.Utils;
 using Newtonsoft.Json;
 namespace FlightControlWeb.Models.JsonModels
 {
@@ -34,6 +35,7 @@ namespace FlightControlWeb.Models.JsonModels
         public string Company_Name { get; set; }
 
         [JsonProperty("date_time")]
+        [JsonConverter(typeof(DateFormatConverter), DateUtil.IsoDateFormat)]
         public DateTime Date_Time { get; set; }
 
         [JsonProperty("is_external")]
