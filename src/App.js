@@ -6,9 +6,10 @@ import FlightsTable from "./FlightsTable";
 import FlightDetails from "./FlightDetails";
 import {getAndUpdate} from './utils/RequestUtil';
 import alertPng from './resources/alert.png';
+import serverSettings from './resources/serverSettings.json';
 import { Container, Alert } from 'react-bootstrap';
 
-const urlPrefix = "https://localhost:5001/api/";
+const urlPrefix = serverSettings.serverSideUrl + "/api/";
 const flightsApi = "flights?relative_to=";
 const flightPlanApi = "FlightPlan/";
 let errorAlert;
@@ -19,7 +20,6 @@ function App() {
     const [flightClickedPlan, setFlightClickedPlan] = useState();
     const [isAlertShowing, setIsAlertShowing] = useState(false);
     const [shouldCenterMap, setShouldCenterMap] = useState(true);
-
     // const [isFlightListLoaded, setIsFlightListLoaded] = useState(false);
 
 
@@ -52,7 +52,7 @@ function App() {
         let isFlightOnList = false;
         Object.values(flightsList).map(value =>
             {if (flightClicked && flightClicked.flight_id === value.flight_id)
-                isFlightOnList = true;})
+                isFlightOnList = true; return '';})
 
         if (!isFlightOnList)
             onFlightDeselect();
@@ -61,7 +61,7 @@ function App() {
     /** Update the flight list with UTC time */
     const getFlightList = () =>  {
         const now = new Date();
-        const utc = new Date(now.getTime() + now.getTimezoneOffset() * 60000);
+        const utc = new Date(now.toUTCString());
         const dateUtc = utc.toISOString().split('.')[0]+"Z";
         const syncAll = "&sync_all";
         const url = urlPrefix + flightsApi + dateUtc + syncAll;
@@ -69,9 +69,10 @@ function App() {
     }
 
     /** Request the flight plan */
+
+      
     const getFlightPlan = (id) => {
         let url = urlPrefix + flightPlanApi + id;
-        console.log(url);
         getAndUpdate(url, setFlightClickedPlan, undefined, onErrorAlert);
     }
 
@@ -80,7 +81,7 @@ function App() {
     const getError = () => {
         if (isAlertShowing)
             return ( <div className={'alert'}>
-                    <Alert key={'alert'} variant={'danger'} isOpen={isAlertShowing} onClose={() => setIsAlertShowing(false)} dismissible>
+                    <Alert key={'alert'} variant={'danger'} onClose={() => setIsAlertShowing(false)} dismissible>
                     <Alert.Heading><img alt={'alertImg'} src={alertPng}/>Oops</Alert.Heading>
                     {errorAlert}
                     </Alert>
@@ -90,9 +91,10 @@ function App() {
 
     /** On application load to screen */
     useEffect(() => {
+        document.title = "Flight Control React";
         getFlightList();
         setInterval(() => getFlightList(), 1000);
-    }, [])
+    }, []) // eslint-disable-line react-hooks/exhaustive-deps
 
     return (
         <div className={'body'}>
@@ -108,7 +110,7 @@ function App() {
                            shouldCenterMap={shouldCenterMap} setShouldCenterMap={setShouldCenterMap}/>
             </div>
             <div className={'details'}>
-                <FlightDetails flightClicked={flightClicked}/>
+                <FlightDetails flightClicked={flightClicked} flightsList={flightsList}/>
             </div>
             <div className={'flight-table'}>
                 <FlightsTable flightsList={flightsList} flightClicked={flightClicked} setFlightClick={onFlightClick}

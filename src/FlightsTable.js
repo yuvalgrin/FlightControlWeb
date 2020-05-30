@@ -5,10 +5,11 @@ import {useDropzone} from 'react-dropzone'
 import {deleteReq, postReq} from './utils/RequestUtil';
 import './FlightsTable.css';
 import fileuploadPng from './resources/file-upload.png';
+import serverSettings from './resources/serverSettings.json';
 
 import {useCallback, useState} from "react";
 
-const urlPrefix = "https://localhost:5001/api/";
+const urlPrefix = serverSettings.serverSideUrl + "/api/";
 const flightPlanApi = "flightplan";
 const flightsApi = "flights/";
 
@@ -29,8 +30,21 @@ const FlightsTable = ({
 
     /** Get only local flights */
     const getServersFlights = () => {
+        let serverFlights = [];
         if (flightsList)
-            return flightsList.map(item => {return createRow(item, false)})
+            serverFlights = flightsList.map(item => {return createRow(item, false)})
+
+        if (serverFlights.length >= 1 && serverFlights[0] !== undefined)
+            return [createTextRow('Remote servers')].concat(serverFlights)
+    }
+
+    /** X only for local flights */
+    const getDeleteButton = (flight) => {
+        if (!flight.is_external)
+            return <button className={'link-button'} onClick={() =>
+                deleteReq(urlPrefix + flightsApi + flight.flight_id, setErrorAlert)}>
+                <img alt={'delete flight'} src={buttonPng}/>
+                </button>
     }
 
     /** Create a table row with company name - flight id */
@@ -50,10 +64,7 @@ const FlightsTable = ({
                             {flight.flight_id +'    '+ flight.company_name}
                     </button>
 
-                    <button className={'link-button'} onClick={() =>
-                        deleteReq(urlPrefix + flightsApi + flight.flight_id, setErrorAlert)}>
-                        <img alt={'delete flight'} src={buttonPng}/>
-                    </button>
+                    {getDeleteButton(flight)}
                 </td>
             </tr>)
     }
@@ -71,13 +82,15 @@ const FlightsTable = ({
                 // Send file content to server side as a post request
                 const binaryStr = reader.result;
                 postReq(url, binaryStr, setErrorAlert);
-                console.log(binaryStr)
             }
             reader.readAsText(file, 'UTF-8')
         })
         onDragLeave();
-    }, [])
+    }, [setErrorAlert])
 
+    // useEffect(() => {
+    //     setErrorAlert();
+    // }, [])
 
     const onDragEnter = () => {setIsDragOver(true)}
     const onDragLeave = () => {setIsDragOver(false)}
@@ -94,17 +107,22 @@ const FlightsTable = ({
         )
     }
 
-    /** Generates the img and animation for drag-and-drop */
-    const createEmptyRow = () => {
+
+    /** Generates row with text only */
+    const createTextRow = (text) => {
+        return (
+            <tr key={'emptyRow'}>
+                <td className={'no-flights'}>
+                    {text}
+                </td>
+            </tr>
+        )
+    }
+
+    /** Generates row with text only */
+    const createEmptyTable = () => {
         if (flightsList.length === 0)
-            return (
-                <tr key={'emptyRow'}>
-                    <td className={'no-flights'}>
-                        No flights available
-                    </td>
-                </tr>
-            )
-        return '';
+            return createTextRow('No flights available');
     }
 
     /** Generate the table component
@@ -114,7 +132,7 @@ const FlightsTable = ({
         return (
             <Table className={isDragOver?'dropzone-disabled':''}>
                 <tbody>
-                {createEmptyRow()}
+                {createEmptyTable()}
                 {getLocalFlights()}
                 {getServersFlights()}
                 </tbody>

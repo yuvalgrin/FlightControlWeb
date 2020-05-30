@@ -5,8 +5,8 @@ import './FlightMap.css';
 import * as React from "react";
 
 const apiKey = 'AIzaSyAjngpsKv9PcK9NqXrHi8VdNi_5VI287CM';
-const defaultLat = '33.790755';
-const defaultLon = '37.203170';
+const defaultLat = 33.790755;
+const defaultLon = 37.203170;
 
 export class FlightMap extends React.Component  {
     /** This method will iterate all of the flight plans and print them into the Map object */
@@ -46,8 +46,14 @@ export class FlightMap extends React.Component  {
 
     /** Center into clicked flight else to default location */
     getCenter = () => {
-        if (this.props.flightClicked && this.props.flightClicked.length !== 0)
-            return {lat: this.props.flightClicked.latitude, lng: this.props.flightClicked.longitude}
+        if (this.props.flightClicked && this.props.flightClicked.length !== 0) {
+            const lat = parseFloat(this.props.flightClicked.latitude);
+            const lon = parseFloat(this.props.flightClicked.longitude);
+            return {
+                lat: lat,
+                lng: lon
+            }
+        }
         else
             return {lat: defaultLat, lng: defaultLon};
     }
@@ -55,6 +61,11 @@ export class FlightMap extends React.Component  {
     /** Center map only on init */
     componentDidMount() {
         this.props.setShouldCenterMap(true);
+    }
+
+    /** Center map only once per click */
+    componentDidUpdate(prevProps, prevState) {
+        this.props.setShouldCenterMap(false);
     }
 
     /** Create map and center it */
@@ -76,12 +87,10 @@ export class FlightMap extends React.Component  {
     /** Create map and center only at first */
     getMap = () => {
         if (this.props.shouldCenterMap) {
-            this.props.setShouldCenterMap(false);
             return this.getMapWithCenter();
         }
         return this.getMapWithoutCenter();
     }
-
 
     render() {
         return (
