@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Threading.Tasks;
 using FlightControlWeb.Models;
@@ -21,10 +22,13 @@ namespace FlightControlWeb.Controllers
         }
 
         [HttpGet]
-        public IActionResult GetFlights([FromQuery] DateTime relative_to)
+        public IActionResult GetFlights([FromQuery] string relative_to)
         {
+            DateTime relativeTo = DateTime.Parse(relative_to,
+                CultureInfo.InvariantCulture,
+               DateTimeStyles.AdjustToUniversal);
             bool syncAll = Request != null ? Request.Query.ContainsKey("sync_all") : false;
-            List<Flight> flights = _flightsManager.GetRelativeFlights(relative_to, syncAll);
+            List<Flight> flights = _flightsManager.GetRelativeFlights(relativeTo, syncAll);
             return new OkObjectResult(JsonConvert.SerializeObject(flights, Formatting.Indented));
         }
 
