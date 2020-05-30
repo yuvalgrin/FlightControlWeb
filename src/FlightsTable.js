@@ -25,14 +25,14 @@ const FlightsTable = ({
     /** Get only local flights */
     const getLocalFlights = () => {
         if (flightsList)
-            return flightsList.map(item => {return createRow(item, true)})
+            return flightsList.map(item => {return createRow(item)})
     }
 
     /** Get only local flights */
     const getServersFlights = () => {
         let serverFlights = [];
         if (flightsList)
-            serverFlights = flightsList.map(item => {return createRow(item, false)})
+            serverFlights = flightsList.map(item => {return createExternalRow(item)})
 
         if (serverFlights.length >= 1 && serverFlights[0] !== undefined)
             return [createTextRow('Remote servers')].concat(serverFlights)
@@ -40,16 +40,36 @@ const FlightsTable = ({
 
     /** X only for local flights */
     const getDeleteButton = (flight) => {
-        if (!flight.is_external)
-            return <button className={'link-button'} onClick={() =>
-                deleteReq(urlPrefix + flightsApi + flight.flight_id, setErrorAlert)}>
-                <img alt={'delete flight'} src={buttonPng}/>
-                </button>
+        return <button className={'link-button'} onClick={() =>
+            deleteReq(urlPrefix + flightsApi + flight.flight_id, setErrorAlert)}>
+            <img alt={'delete flight'} src={buttonPng}/>
+            </button>
     }
 
     /** Create a table row with company name - flight id */
-    const createRow = (flight, localFlights) => {
-        if ((localFlights && flight.is_external) || (!localFlights && !flight.is_external))
+    const createExternalRow = (flight) => {
+        if (!flight.is_external)
+            return;
+
+        let markFlight = false;
+        if (flightClicked && flight.flight_id === flightClicked.flight_id){
+            markFlight = true;
+        }
+        return (
+            <tr key={flight.flight_id}>
+                <td>
+                    <button className={markFlight?'mark-flight':'regular-flight'} title='watch flight'
+                            onClick={() => setFlightClick(flight)}>
+                        {flight.flight_id +'    '+ flight.company_name}
+                    </button>
+                </td>
+            </tr>)
+    }
+
+
+    /** Create a table row with company name - flight id and delete button*/
+    const createRow = (flight) => {
+        if (flight.is_external)
             return;
 
         let markFlight = false;
@@ -87,10 +107,6 @@ const FlightsTable = ({
         })
         onDragLeave();
     }, [setErrorAlert])
-
-    // useEffect(() => {
-    //     setErrorAlert();
-    // }, [])
 
     const onDragEnter = () => {setIsDragOver(true)}
     const onDragLeave = () => {setIsDragOver(false)}
