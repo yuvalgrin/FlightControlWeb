@@ -89,6 +89,7 @@ namespace FlightControlWeb.Models
                 JsonConvert.DeserializeObject<List<Flight>>(queryResult.Result);
             foreach (Flight remoteFlight in flights)
             {
+                remoteFlight.Is_External = true;
                 totalFlights.Add(remoteFlight);
                 RemoteFlightIdToServer.TryAdd(remoteFlight.Flight_Id, server);
             }
