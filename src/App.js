@@ -58,6 +58,12 @@ function App() {
             onFlightDeselect();
     }
 
+    /** Special error action for flight list */
+    const onFlightListError = (error) => {
+        onErrorAlert(error);
+        setFlightList([]);
+    }
+
     /** Update the flight list with UTC time */
     const getFlightList = () =>  {
         const now = new Date();
@@ -65,12 +71,10 @@ function App() {
         const dateUtc = utc.toISOString().split('.')[0]+"Z";
         const syncAll = "&sync_all";
         const url = urlPrefix + flightsApi + dateUtc + syncAll;
-        getAndUpdate(url, setFlightList, undefined, onErrorAlert);
+        getAndUpdate(url, setFlightList, undefined, onFlightListError);
     }
 
     /** Request the flight plan */
-
-      
     const getFlightPlan = (id) => {
         let url = urlPrefix + flightPlanApi + id;
         getAndUpdate(url, setFlightClickedPlan, undefined, onErrorAlert);

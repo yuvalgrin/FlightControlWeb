@@ -35,7 +35,7 @@ const FlightsTable = ({
             serverFlights = flightsList.map(item => {return createExternalRow(item)})
 
         if (serverFlights.length >= 1 && serverFlights[0] !== undefined)
-            return [createTextRow('Remote servers')].concat(serverFlights)
+            return [createTextRow('Remote servers', false)].concat(serverFlights)
     }
 
     /** X only for local flights */
@@ -125,10 +125,10 @@ const FlightsTable = ({
 
 
     /** Generates row with text only */
-    const createTextRow = (text) => {
+    const createTextRow = (text, isNoFlights) => {
         return (
             <tr key={'emptyRow'}>
-                <td className={'no-flights'}>
+                <td className={isNoFlights?'no-flights':'remote-flight'}>
                     {text}
                 </td>
             </tr>
@@ -138,7 +138,7 @@ const FlightsTable = ({
     /** Generates row with text only */
     const createEmptyTable = () => {
         if (flightsList.length === 0)
-            return createTextRow('No flights available');
+            return createTextRow('Drop your flightplan here', true);
     }
 
     /** Generate the table component

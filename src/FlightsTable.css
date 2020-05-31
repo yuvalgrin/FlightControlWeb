@@ -22,8 +22,18 @@
 .no-flights {
     border: none;
     font-family: sans-serif;
-    color: white;
-    font-weight: bold;
+    color: floralwhite;
+    font-weight: bolder;
+    font-style: italic;
+    font-stretch: extra-expanded;
+}
+
+.remote-flight {
+    border: none;
+    font-family: sans-serif;
+    color: floralwhite;
+    font-weight: bolder;
+    font-style: italic;
     font-stretch: extra-expanded;
 }
 
