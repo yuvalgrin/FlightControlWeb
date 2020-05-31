@@ -100,6 +100,7 @@ namespace FlightControlWeb.Models
         {
             using (var client = new HttpClient())
             {
+                client.Timeout = TimeSpan.FromSeconds(1);
                 HttpResponseMessage response = client.GetAsync(url).Result;
                 response.EnsureSuccessStatusCode();
                 return await response.Content.ReadAsStringAsync();

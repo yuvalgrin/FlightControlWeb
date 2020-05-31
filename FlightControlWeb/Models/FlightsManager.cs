@@ -15,7 +15,6 @@ namespace FlightControlWeb.Models
         {
             this._remoteServersConnector = remoteServersConnector;
             ActiveFlightPlans = new ConcurrentDictionary<string, FlightPlan>();
-            InitDummies();
         }
 
         /**
@@ -108,32 +107,5 @@ namespace FlightControlWeb.Models
             return ActiveFlightPlans.TryAdd(flightPlan.Flight_Id, flightPlan);
         }
 
-
-        /* ------------DUMMY STUFF----------- */
-        public void InitDummies()
-        {
-            //// Dummy flight!!!
-            for (int i = 1; i < 2; i++)
-            {
-                Location loc = new Location(32.704581, 35.583124, DateTime.UtcNow);
-                List<Segment> ls = new List<Segment>();
-                ls.Add(new Segment(32.704581 + i * 2, 35.583124 + i * 1, 20));
-                ls.Add(new Segment(33.804581 + i * 3, 35.683124 + i * 2, 30));
-                ls.Add(new Segment(32.904581 + i * 2, 36.783124 + i * 3, 40));
-                ls.Add(new Segment(20.904581 + i * 1, 21.783124 + i * 2, 40));
-                FlightPlan flpln = new FlightPlan(i, "Company_" + i, loc, ls);
-                ActiveFlightPlans.TryAdd(flpln.Flight_Id, flpln);
-            }
-
-
-            Location locc = new Location(38.112375, 23.879437, DateTime.UtcNow);
-
-            List<Segment> lss = new List<Segment>();
-            lss.Add(new Segment(31.922629, 31.522594, 535)); // egypt
-            lss.Add(new Segment(32.426506, 34.743033, 265)); // cyprus
-            lss.Add(new Segment(26.209199, 35.055211, 305)); // greece
-            FlightPlan flplnn = new FlightPlan(8, "Company_" + 7, locc, lss);
-            ActiveFlightPlans.TryAdd(flplnn.Flight_Id, flplnn);
-        }
     }
 }
