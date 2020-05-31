@@ -5,11 +5,10 @@ import {useDropzone} from 'react-dropzone'
 import {deleteReq, postReq} from './utils/RequestUtil';
 import './FlightsTable.css';
 import fileuploadPng from './resources/file-upload.png';
-import serverSettings from './resources/serverSettings.json';
 
 import {useCallback, useState} from "react";
 
-const urlPrefix = serverSettings.serverSideUrl + "/api/";
+const urlPrefix = window.SERVER_URL + "/api/";
 const flightPlanApi = "flightplan";
 const flightsApi = "flights/";
 

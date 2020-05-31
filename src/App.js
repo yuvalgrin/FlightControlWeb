@@ -6,10 +6,9 @@ import FlightsTable from "./FlightsTable";
 import FlightDetails from "./FlightDetails";
 import {getAndUpdate} from './utils/RequestUtil';
 import alertPng from './resources/alert.png';
-import serverSettings from './resources/serverSettings.json';
 import { Container, Alert } from 'react-bootstrap';
 
-const urlPrefix = serverSettings.serverSideUrl + "/api/";
+const urlPrefix = window.SERVER_URL + "/api/";
 const flightsApi = "flights?relative_to=";
 const flightPlanApi = "FlightPlan/";
 let errorAlert;
