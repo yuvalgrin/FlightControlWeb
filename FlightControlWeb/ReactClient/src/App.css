@@ -1,0 +1,49 @@
+.body {
+    background-color: #576373;
+}
+
+html {
+    background-color: #576373;
+}
+
+.grid-container {
+    display: grid;
+    grid-template-columns: 1fr 0.3fr;
+    grid-template-rows: 47px minmax(400px, 1fr) 1fr;
+    gap: 10px 10px;
+    grid-template-areas: "header header" "map flight-table" "details flight-table";}
+
+.header {
+    grid-area: header;
+    overflow: hidden;
+    font-weight: bold;
+    font-stretch: extra-expanded;
+    color: white;
+    text-shadow: 2px 2px #1b1e21;}
+
+.flight-table {
+    grid-area: flight-table;
+    overflow-y: auto;
+    max-height: calc(100vh - 85px)
+}
+
+.map {
+    grid-area: map;
+    position: relative;
+    overflow: hidden;
+}
+
+.details {
+    grid-area: details;
+    overflow-y: auto;
+    max-height: calc(100vh - 85px - 400px)
+}
+
+.alert {
+    align-items: center;
+    position: absolute;
+    top: 0;
+    right: 0;
+    left: 0;
+    margin:auto;
+}
