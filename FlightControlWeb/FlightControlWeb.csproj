@@ -18,8 +18,12 @@
     <Folder Include="Models\JsonModels\" />
     <Folder Include="Models\Algo\" />
     <Folder Include="Models\Utils\" />
+    <Folder Include="wwwroot\" />
   </ItemGroup>
   <ItemGroup>
         <PackageReference Include="Newtonsoft.Json" Version="12.0.3" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Remove="wwwroot\index.html" />
   </ItemGroup>
 </Project>
