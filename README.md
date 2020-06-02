@@ -18,7 +18,7 @@ Homework assignment for CS degree 2nd year.
 To change the server we are working with just edit the wwwroot\index.html file, where you'll find a global var named: 'window.SERVER_URL'
 
 
-* There are 3 known JS console errors in the imported 'google-maps-react' package we used:
+There are 3 known JS console errors in the imported 'google-maps-react' package we used:
 
 - Warning: Using UNSAFE_componentWillReceiveProps in strict mode is not recommended...
 - Warning: Can't call setState on a component that is not yet mounted. This is a no-op, ...
