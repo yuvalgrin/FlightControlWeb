@@ -92,6 +92,10 @@ export class FlightMap extends React.Component  {
         return this.getMapWithoutCenter();
     }
 
+    componentDidCatch(error, errorInfo) {
+        console.log(error);
+    }
+
     render() {
         return (
             this.getMap()
